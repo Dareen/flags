@@ -13,14 +13,14 @@ PORT = 9595
 
 PREFIX = env("PREFIX", default="flags")
 VERSION = env("VERSION", default="v1")
-FLAGS_LIST_KEY = ":".join([PREFIX, VERSION, "all_flags"])
+FLAGS_LIST_KEY = ":".join([PREFIX, VERSION, "%s", "all_flags"])
 
 REDIS_HOST = env("REDIS_HOST", default="localhost")
 REDIS_PORT = env("REDIS_PORT", cast=int, default=6379)
 REDIS_DB = env("REDIS_DB", cast=int, default=0)
 
 #########################################
-## Local Settings and Test Settings
+# Local Settings and Test Settings
 ###########
 try:
     from flags.conf.local_settings import *
@@ -33,7 +33,7 @@ except ImportError:
     pass
 
 #########################################
-## Logging configuration
+# Logging configuration
 ##########
 
 LOGGING_DIR = "/var/log/dubizzle"
@@ -64,7 +64,8 @@ LOGGING = {
             "class": "logging.handlers.SysLogHandler",
             "facility": "local0",
             "formatter": "syslog",
-            "address": [env("SYSLOG_HOST", default="syslog-aws.dubizzlecloud.internal"),
+            "address": [env("SYSLOG_HOST",
+                            default="syslog-aws.dubizzlecloud.internal"),
                         env("SYSLOG_PORT", default=1122, cast=int)],
             "filters": ["hostname"],
         },
