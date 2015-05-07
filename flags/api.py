@@ -1,5 +1,6 @@
 import json
 import logging
+from httplib import CREATED, NOT_FOUND, NO_CONTENT, CONFLICT
 
 from bottle import HTTPResponse, response
 from bottleCBV import BottleView
@@ -21,28 +22,29 @@ class FlagsView(BottleView):
         try:
             return {key: read(application, key)}
         except KeyDoesNotExistError:
-            return HTTPResponse(body="Key does not exist!", status=404)
+            return HTTPResponse(body="Key does not exist!", status=NOT_FOUND)
 
     def post(self, application, key, value):
         try:
             create(application, key, value)
-            return HTTPResponse(status=201)
+            return HTTPResponse(status=CREATED)
         except KeyExistsError:
             msg = ("Key already exists! You might want to use PUT instead of "
                    "POST.")
-            return HTTPResponse(status=409, body=msg)
+            return HTTPResponse(status=CONFLICT, body=msg)
 
     def put(self, application, key, value):
         try:
             update(application, key, value)
-            return HTTPResponse(status=204)
+            return HTTPResponse(status=NO_CONTENT)
         except KeyDoesNotExistError:
             msg = ("Key does not exists! You might want to use POST instead of"
                    " PUT.")
-            return HTTPResponse(status=404, body=msg)
+            return HTTPResponse(status=NOT_FOUND, body=msg)
 
     def delete(self, application, key):
         try:
             delete(application, key)
+            return HTTPResponse(status=NO_CONTENT)
         except KeyDoesNotExistError:
-            return HTTPResponse(body="Key does not exist!", status=404)
+            return HTTPResponse(body="Key does not exist!", status=NOT_FOUND)
