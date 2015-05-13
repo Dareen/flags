@@ -1,0 +1,9 @@
+DEBUG = True
+LOG_LEVEL = "DEBUG"
+
+HOST = "localhost"
+PORT = 9595
+
+REDIS_HOST = "localhost"
+REDIS_PORT = 6379
+REDIS_DB = 0
