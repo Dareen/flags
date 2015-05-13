@@ -1,3 +1,4 @@
 redis==2.10.3
 envparse==0.1.5
 bottleCBV
+uWSGI==1.9.20
