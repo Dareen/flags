@@ -7,13 +7,23 @@ from envparse import env
 DEBUG = env("DEBUG", cast=bool, default=False)
 LOG_LEVEL = env("LOG_LEVEL", default="INFO")
 APP_NAME = env("APP_NAME", default="flags")
+ADMIN_MODE = env("ADMIN_MODE", cast=bool, default=False)
+REDIS_ALL_FLAGS_KEY = env("REDIS_ALL_FLAGS_KEY", default="all_flags")
+
+ZK_HOSTS = env("ZK_HOSTS",
+               default="aws_zk1.dubizzlecloud.internal:2181,"
+                       "aws_zk2.dubizzlecloud.internal:2181,"
+                       "aws_zk3.dubizzlecloud.internal:2181,"
+                       "aws_zk4.dubizzlecloud.internal:2181,"
+                       "aws_zk5.dubizzlecloud.internal:2181")
+# Time in seconds to wait for zookeeper connection to succeed.
+ZK_CONNECTION_TIMEOUT = 5
 
 HOST = "localhost"
 PORT = 9595
 
 PREFIX = env("PREFIX", default="flags")
 VERSION = env("VERSION", default="v1")
-FLAGS_LIST_KEY = ":".join([PREFIX, VERSION, "%s", "all_flags"])
 
 REDIS_HOST = env("REDIS_HOST", default="localhost")
 REDIS_PORT = env("REDIS_PORT", cast=int, default=6379)
@@ -86,6 +96,10 @@ LOGGING = {
         "flags": {
             "handlers": ["stdout_handler", "file_handler", "syslog"],
             "level": LOG_LEVEL,
+        },
+        "kazoo.client": {
+            "handlers": ["syslog"],
+            "level": "INFO",
         },
     }
 }
