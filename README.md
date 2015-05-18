@@ -1,7 +1,7 @@
 # Flags
 
 RESTful service for administering flags.
-Reads and writes flags to/from a key-value store (currently redis) to be used to enable/disable features.
+Reads and writes flags to/from a key-value store (currently Zookeeper) to be used to enable/disable features.
 <br/>Can be used in any domain or application.
 
 ## Notions
@@ -131,5 +131,6 @@ No content
 
 
 ## What's next:
+* Tests
 * UI
 * Reading the list of available applications
