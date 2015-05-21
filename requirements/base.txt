@@ -3,3 +3,4 @@ envparse==0.1.5
 bottleCBV
 uWSGI==1.9.20
 kazoo==2.0
+WTForms==2.0.2

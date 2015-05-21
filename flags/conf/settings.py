@@ -98,7 +98,7 @@ LOGGING = {
             "level": LOG_LEVEL,
         },
         "kazoo.client": {
-            "handlers": ["syslog"],
+            "handlers": ["stdout_handler", "syslog"],
             "level": "INFO",
         },
     }

@@ -2,7 +2,8 @@ import logging
 
 from bottle import Bottle, run
 
-from flags.api import FlagsView
+from flags.views.api import FlagsView
+from flags.views.ui import register_ui_views
 from flags.conf import settings
 
 
@@ -11,6 +12,7 @@ logger = logging.getLogger(__name__)
 app = Bottle()
 
 FlagsView.register(app)
+register_ui_views(app)
 
 
 @app.route("/check")

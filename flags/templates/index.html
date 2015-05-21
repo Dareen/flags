@@ -1,0 +1,8 @@
+%rebase('layout', title='Flags')
+
+<h1>Flags</h1>
+
+%for flag in flags:
+    version 2
+   {{flag}}: {{flags[flag]}}
+%end
