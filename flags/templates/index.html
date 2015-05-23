@@ -1,14 +1,11 @@
 %rebase('layout', title='Flags')
 
-<h1>Applications</h1>
+<h1>Flags Service</h1>
 
-Default flags value: {{default}}
+Code and Docs: <a href="https://github.com/dubizzle/flags">flags</a><br />
 
-<form name="applications" action="/" method="POST">
-<select name="application">
-    %for app in applications:
-        <option value="{{app}}">{{app}}</option>
-    %end
-</select>
-</form>
+Default flags value: <b>{{default}}<b/> <br />
 
+%for application in applications:
+   <a href="{{app.get_url('flags', application=application)}}">{{application}}</a><br />
+%end

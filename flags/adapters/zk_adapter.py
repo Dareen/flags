@@ -1,4 +1,5 @@
 import logging
+import json
 
 from kazoo.client import KazooClient
 from kazoo.exceptions import NodeExistsError, NoNodeError
@@ -48,6 +49,13 @@ class ZKAdapter(BaseStoreAdapter):
             return []
         return keys
 
+    def get_all_items(self, application):
+        keys = self.get_all_keys(application)
+        items = dict()
+        for key in keys:
+            items[key] = self.read(application, key)
+        return items
+
     def create(self, application, key, value):
         # Ensure a path, create if necessary
         app_path = self.get_key(application)
@@ -65,7 +73,11 @@ class ZKAdapter(BaseStoreAdapter):
             # zk.retry will automatically retry upon zk connection failure
             data, stat = self.zk.retry(self.zk.get, self.get_key(application,
                                                                  key))
-            return data
+            try:
+                return json.loads(data)
+            except ValueError:
+                return data
+
         except NoNodeError:
             raise KeyDoesNotExistError
 

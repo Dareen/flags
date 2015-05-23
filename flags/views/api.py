@@ -62,7 +62,7 @@ class APIView(BottleView):
             return int(settings.DEFAULT_VALUE)
 
         value = read_from_adapter(application, key)
-        user_flag = parse_segmentation(json.loads(value))
+        user_flag = parse_segmentation(value)
         return {key: user_flag}
 
     def post(self, application, key):

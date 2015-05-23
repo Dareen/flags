@@ -49,6 +49,10 @@ class BaseStoreAdapter(object):
         pass
 
     @abstractmethod
+    def get_all_items(self, application):
+        pass
+
+    @abstractmethod
     def create(self, application, key, value):
         pass
 
