@@ -1,6 +1,6 @@
 %rebase('layout', title='Flags', parent_url=app.get_url('index'))
 
-<h1>Application: {{application}}</h1>
+<h1>Application: {{application}} - READ ONLY</h1>
 
 {{default}} except if stated otherwise. <br/><br/>
 
@@ -8,25 +8,26 @@
 %for flag in flags:
 <div title="{{flags[flag]}}"><strong>{{flag}}</strong></div>
 
-<input type="checkbox" name="apply_to_all" value="apply_to_all" {{"checked" if not isinstance(flags[flag], dict) else ""}}>Apply to all</input><br/>
+{{bool(flags[flag]) if not isinstance(flags[flag], dict) else ""}}
+<input type="checkbox" name="apply_to_all" value="apply_to_all" {{"checked" if not isinstance(flags[flag], dict) else ""}}>for all</input><br/>
 
 <table border=".5" style="width:100%">
 %if isinstance(flags[flag], dict):
 %for segment in flags[flag]:
   <tr>
-  <td>- Remove segment</td>
-    <th>{{segment}} <input type="checkbox" name="apply_to_all" value="apply_to_all" {{"checked" if not isinstance(flags[flag][segment], dict) else ""}}>Apply to all</input><br/></th>
+  <th>-</th>
+    <th>{{segment}} {{bool(flags[flag][segment]) if not isinstance(flags[flag][segment], dict) else ""}} <input type="checkbox" name="apply_to_all" value="apply_to_all" {{"checked" if not isinstance(flags[flag][segment], dict) else ""}}>for all</input><br/></th>
 %if isinstance(flags[flag][segment], dict):
 %for segment_option in flags[flag][segment]:
-    <td><strong>{{segment_option}}</strong>  {{flags[flag][segment][segment_option]}}</td>
+    <td><strong>{{segment_option}}</strong>  {{bool(flags[flag][segment][segment_option])}}</td>
 %end
 %end
-    <td>+ Add segment option</td>
+    <td>+</td>
   </tr>
 %end
 %end
   <tr>
-    <td>+ Add segment</td>
+    <th>+</th>
   </tr>
 </table>
 %end
