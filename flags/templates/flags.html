@@ -1,0 +1,10 @@
+%rebase('layout', title='Flags')
+
+<h1>Flags</h1>
+
+If a flag has segmentation, it will return 0 if any of the disabled segments is matched with the user request.
+
+%for flag in flags:
+    <!-- version 3<br/> -->
+   {{flag}}
+%end

@@ -13,12 +13,12 @@ class BaseStoreAdapter(object):
 
     @abstractproperty
     def key_separator(self):
-        return ":"
+        pass
 
-    def get_key(self, application, key=None):
+    def get_key(self, *suffixes):
         return self.key_separator.join(
-            map(str, filter(None, [settings.PREFIX, settings.VERSION,
-                                   application, key]))
+            map(str, filter(None,
+                [settings.PREFIX, settings.VERSION] + list(suffixes)))
         )
 
     @abstractmethod
@@ -39,6 +39,10 @@ class BaseStoreAdapter(object):
             return False
 
         return self
+
+    @abstractmethod
+    def get_applications(self):
+        pass
 
     @abstractmethod
     def get_all_keys(self, application):

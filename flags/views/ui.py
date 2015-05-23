@@ -11,6 +11,10 @@ from bottle import (view, TEMPLATE_PATH, Bottle, static_file, request,
 #  XXX Remove these lines and the next section if you aren't processing forms
 from wtforms import Form, TextField, validators
 
+from flags.conf import settings
+from flags.adapters.zk_adapter import ZKAdapter
+from flags.errors import KeyExistsError, KeyDoesNotExistError
+
 
 #  XXX Form validation example
 # class NewUserFormProcessor(Form):
@@ -29,23 +33,33 @@ from wtforms import Form, TextField, validators
 
 def register_ui_views(app):
 
-    #  Pretty much this entire function needs to be written for your
-
-    # Template global variable
-    # BaseTemplate.defaults['app'] = app
     # Location of HTML templates
     TEMPLATE_PATH.insert(0, os.path.abspath(
         os.path.join(os.path.dirname(__file__), '../templates'))
     )
 
-    #  XXX Index page
+    adapter_type = ZKAdapter
+
+    # Index page
     @app.route('/', name='index')
     @view('index')  # Name of template
     def index():
+        default = settings.DEFAULT_VALUE
+        with adapter_type() as adapter:
+            applications = adapter.get_applications()
 
-        flags = {
-            "TEST": "1",
-        }
+        #  any local variables can be used in the template
+        return locals()
+
+    @app.route('/<application>', name='flags', methods=['GET','POST'])
+    @view('flags')  # Name of template
+    def flags(application):
+
+        if request.method == "POST":
+            application = (request.form.get['applications'])
+
+        with adapter_type() as adapter:
+            flags = adapter.get_all_keys(application)
 
         #  any local variables can be used in the template
         return locals()

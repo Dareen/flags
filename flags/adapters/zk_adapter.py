@@ -17,10 +17,11 @@ class ZKAdapter(BaseStoreAdapter):
     def key_separator(self):
         return "/"
 
-    def get_key(self, application, key=None):
-        path = super(ZKAdapter, self).get_key(application, key)
+    def get_key(self, *suffixes):
+        # *suffixes: anything to be added after the prefix and version
+        # e.g. application name, key, segments ... etc.
+        path = super(ZKAdapter, self).get_key(*suffixes)
         # append a preceeding slash in the beginning, ZK specific format
-        # if key is None:
         path = "/%s" % path
         return path
 
@@ -30,6 +31,15 @@ class ZKAdapter(BaseStoreAdapter):
 
     def disconnect(self):
         self.zk.stop()
+
+    def get_applications(self):
+        try:
+            # self.get_key() without params will get the root node path
+            # i.e. "/flags/v1/"
+            apps = self.zk.get_children(self.get_key())
+        except NoNodeError:
+            return []
+        return apps
 
     def get_all_keys(self, application):
         try:

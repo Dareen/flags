@@ -29,6 +29,9 @@ class RedisAdapter(BaseStoreAdapter):
     def disconnect(self):
         pass
 
+    def get_applications(self):
+        raise NotImplemented
+
     def get_all_keys(self, application):
         keys = self.redis.smembers(self.get_key(application,
                                    settings.REDIS_ALL_FLAGS_KEY))
