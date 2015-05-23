@@ -2,7 +2,7 @@ import json
 import logging
 from httplib import CREATED, NOT_FOUND, NO_CONTENT, CONFLICT, UNAUTHORIZED
 
-from bottle import HTTPResponse, response
+from bottle import HTTPResponse, response, request
 from bottleCBV import BottleView
 
 from flags.conf import settings
@@ -13,7 +13,7 @@ from flags.errors import KeyExistsError, KeyDoesNotExistError
 logger = logging.getLogger(__name__)
 
 
-class FlagsView(BottleView):
+class APIView(BottleView):
 
     def __init__(self):
         self.adapter_type = ZKAdapter
@@ -24,14 +24,50 @@ class FlagsView(BottleView):
             return json.dumps(adapter.get_all_keys(application))
 
     def get(self, application, key):
-        try:
-            with self.adapter_type() as adapter:
-                return {key: adapter.read(application, key)}
-        except KeyDoesNotExistError:
-            return HTTPResponse(body="Key does not exist!", status=NOT_FOUND)
+        def read_from_adapter(application, key):
+            try:
+                with self.adapter_type() as adapter:
+                    return adapter.read(application, key)
+            except KeyDoesNotExistError:
+                return HTTPResponse(body="Key does not exist!",
+                                    status=NOT_FOUND)
 
-    def post(self, application, key, value):
+        def parse_segmentation(json_value):
+            if isinstance(json_value, dict):
+                # this flag is segmented
+                # if any of the matching segments is different than the default
+                # value, we return this segment flag
+                for key in request.GET.keys():
+                    segment = json_value.get(key, settings.DEFAULT_VALUE)
+
+                    if segment != settings.DEFAULT_VALUE:
+                        if isinstance(segment, dict):
+                            segmented_value = segment.get(
+                                request.GET[key],
+                                settings.DEFAULT_VALUE
+                            )
+                            if segmented_value != settings.DEFAULT_VALUE:
+                                return segmented_value
+                        # only return if the segment is different than the
+                        # default, otherwise keep checking other segments
+                        elif segment != settings.DEFAULT_VALUE:
+                            # this segment is disabled/enabled for all
+                            return segment
+            else:
+                # this key is disabled/enabled for all
+                return json_value
+
+            # the flag is segmented, but the user-specific segment is not
+            # specified
+            return int(settings.DEFAULT_VALUE)
+
+        value = read_from_adapter(application, key)
+        user_flag = parse_segmentation(json.loads(value))
+        return {key: user_flag}
+
+    def post(self, application, key):
         if settings.ADMIN_MODE:
+            value = json.dumps(request.json)
             try:
                 with self.adapter_type() as adapter:
                     adapter.create(application, key, value)
@@ -43,8 +79,9 @@ class FlagsView(BottleView):
         else:
             return HTTPResponse(status=UNAUTHORIZED)
 
-    def put(self, application, key, value):
+    def put(self, application, key):
         if settings.ADMIN_MODE:
+            value = json.dumps(request.json)
             try:
                 with self.adapter_type() as adapter:
                     adapter.update(application, key, value)

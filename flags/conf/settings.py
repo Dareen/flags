@@ -9,6 +9,7 @@ LOG_LEVEL = env("LOG_LEVEL", default="INFO")
 APP_NAME = env("APP_NAME", default="flags")
 ADMIN_MODE = env("ADMIN_MODE", cast=bool, default=False)
 REDIS_ALL_FLAGS_KEY = env("REDIS_ALL_FLAGS_KEY", default="all_flags")
+DEFAULT_VALUE = env("DEFAULT_VALUE", cast=bool, default=True)
 
 ZK_HOSTS = env("ZK_HOSTS",
                default="aws_zk1.dubizzlecloud.internal:2181,"
