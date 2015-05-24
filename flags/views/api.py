@@ -1,11 +1,14 @@
 import json
 import logging
-from httplib import CREATED, NOT_FOUND, NO_CONTENT, CONFLICT, UNAUTHORIZED
+from httplib import (CREATED, NOT_FOUND, NO_CONTENT, CONFLICT, UNAUTHORIZED,
+                     BAD_REQUEST)
 
 from bottle import HTTPResponse, response, request
 from bottleCBV import BottleView
+from schema import SchemaError
 
 from flags.conf import settings
+from flags.conf.schemas import flags_schema
 from flags.adapters.zk_adapter import ZKAdapter
 from flags.errors import KeyExistsError, KeyDoesNotExistError
 
@@ -29,44 +32,59 @@ class APIView(BottleView):
                 with self.adapter_type() as adapter:
                     return adapter.read(application, key)
             except KeyDoesNotExistError:
-                return HTTPResponse(body="Key does not exist!",
-                                    status=NOT_FOUND)
+                raise HTTPResponse(body="Key does not exist!",
+                                   status=NOT_FOUND)
 
-        def parse_segmentation(json_value):
-            if isinstance(json_value, dict):
-                # this flag is segmented
-                # if any of the matching segments is different than the default
-                # value, we return this segment flag
-                for key in request.GET.keys():
-                    segment = json_value.get(key, settings.DEFAULT_VALUE)
+        def parse_segmentation(segmentation):
 
-                    if segment != settings.DEFAULT_VALUE:
-                        if isinstance(segment, dict):
-                            segmented_value = segment.get(
+            # this flag is segmented
+            # if any of the matching segments is different than the default
+            # value, we return this segment flag
+            for key in request.GET.keys():
+                segment = segmentation.get(key, None)
+
+                if segment:
+                    if segment["for_all"]:
+                        if segment["enabled"] != settings.DEFAULT_VALUE:
+                            # this segment is enabled/disabled for all
+                            return segment["enabled"]
+                    else:
+                        # not enabled/disabled for all, check user specific
+                        # value
+                        segment_options = segment.get("options", None)
+                        if segment_options:
+                            segmented_value = segment_options.get(
                                 request.GET[key],
                                 settings.DEFAULT_VALUE
                             )
+                            # if it's disabled, return immediately
                             if segmented_value != settings.DEFAULT_VALUE:
                                 return segmented_value
-                        # only return if the segment is different than the
-                        # default, otherwise keep checking other segments
-                        elif segment != settings.DEFAULT_VALUE:
-                            # this segment is disabled/enabled for all
-                            return segment
-            else:
-                # this key is disabled/enabled for all
-                return json_value
 
             # the flag is segmented, but the user-specific segment is not
             # specified
-            return int(settings.DEFAULT_VALUE)
+            return settings.DEFAULT_VALUE
 
         value = read_from_adapter(application, key)
-        user_flag = parse_segmentation(value)
-        return {key: user_flag}
+        if value["for_all"]:
+            # this key is disabled/enabled for all
+            return {key: value["enabled"]}
+        else:
+            # check segmentation
+            segmentation = value.get("segmentation", None)
+            if not segmentation:
+                return {key: value["enabled"]}
+
+            user_flag = parse_segmentation(segmentation)
+            return {key: user_flag}
 
     def post(self, application, key):
         if settings.ADMIN_MODE:
+            try:
+                flags_schema.validate(request.json)
+            except SchemaError as e:
+                return HTTPResponse(status=BAD_REQUEST, body=e)
+
             value = json.dumps(request.json)
             try:
                 with self.adapter_type() as adapter:
@@ -81,6 +99,11 @@ class APIView(BottleView):
 
     def put(self, application, key):
         if settings.ADMIN_MODE:
+            try:
+                flags_schema.validate(request.json)
+            except SchemaError as e:
+                return HTTPResponse(status=BAD_REQUEST, body=e)
+
             value = json.dumps(request.json)
             try:
                 with self.adapter_type() as adapter:

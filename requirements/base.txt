@@ -4,3 +4,4 @@ bottleCBV
 uWSGI==1.9.20
 kazoo==2.0
 WTForms==2.0.2
+schema==0.3.1
