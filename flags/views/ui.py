@@ -5,11 +5,12 @@
 #
 import os
 
-from bottle import view, TEMPLATE_PATH, request, BaseTemplate
+from bottle import (view, TEMPLATE_PATH, request, BaseTemplate, redirect,
+                    static_file)
 
 from flags.conf import settings
 from flags.adapters.zk_adapter import ZKAdapter
-from flags.errors import KeyExistsError, KeyDoesNotExistError
+# from flags.errors import KeyExistsError, KeyDoesNotExistError
 
 
 def register_ui_views(app):
@@ -22,6 +23,13 @@ def register_ui_views(app):
 
     adapter_type = ZKAdapter
 
+    #  Routes to static content
+    @app.route('/<path:re:favicon.ico>')
+    @app.route('/static/<path:path>', name='static')
+    def static(path):
+        'Serve static content.'
+        return static_file(path, root='flags/static/')
+
     # Index page: list of available applications
     @app.route('/', name='index')
     @view('index')  # Name of template
@@ -33,12 +41,14 @@ def register_ui_views(app):
         #  any local variables can be used in the template
         return locals()
 
-    @app.route('/<application>', name='flags', methods=['GET', 'POST'])
+    @app.get('/<application>', name='flags')
+    @app.post('/<application>')
     @view('flags')  # Name of template
     def flags(application):
         def post():
             # TODO
-            application = (request.form.get['applications'])
+            application = request.forms
+            redirect(app.get_url('index'))
 
         if request.method == "POST":
             post()

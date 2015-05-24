@@ -2,9 +2,14 @@
 
 <h1>Flags Service</h1>
 
-Code and Docs: <a href="https://github.com/dubizzle/flags">flags</a><br />
+Code and Docs: <a href="https://github.com/dubizzle/flags">flags on github</a><br />
 
-Default flags value: <b>{{default}}<b/> <br />
+Default flags value: <b>{{default}}<b/> <br /><br /><br />
+
+<h2>Applications:</h2>
+<form method="POST", action="">
+    <input type="button" value="Add Application" />
+</form>
 
 %for application in applications:
    <a href="{{app.get_url('flags', application=application)}}">{{application}}</a><br />

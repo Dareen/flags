@@ -8,26 +8,43 @@
 %for flag in flags:
 <div title="{{flags[flag]}}"><strong>{{flag}}</strong></div>
 
-{{bool(flags[flag]) if not isinstance(flags[flag], dict) else ""}}
-<input type="checkbox" name="apply_to_all" value="apply_to_all" {{"checked" if not isinstance(flags[flag], dict) else ""}}>for all</input><br/>
+<form method="POST" action="{{app.get_url('flags', application=application)}}">
 
-<table border=".5" style="width:100%">
-%if isinstance(flags[flag], dict):
-%for segment in flags[flag]:
+
+<input type="checkbox" data-toggle="switch" id="{{flag}}" {{"checked" if flags[flag]["enabled"] else ""}} {{"disabled" if flags[flag]["for_all"] else ""}} />
+
+<label class="checkbox" for="toall_{{flag}}">
+    <input type="checkbox" value="" id="toall_{{flag}}" data-toggle="checkbox" {{"checked" if flags[flag]["for_all"] else ""}}>for all</label>
+</label><br/>
+
+Segmentation:
+<table border=".5" >
+%if flags[flag].get("segmentation", None):
+%segmentation = flags[flag].get("segmentation")
+%for segment in segmentation:
   <tr>
-  <th>-</th>
-    <th>{{segment}} {{bool(flags[flag][segment]) if not isinstance(flags[flag][segment], dict) else ""}} <input type="checkbox" name="apply_to_all" value="apply_to_all" {{"checked" if not isinstance(flags[flag][segment], dict) else ""}}>for all</input><br/></th>
-%if isinstance(flags[flag][segment], dict):
-%for segment_option in flags[flag][segment]:
-    <td><strong>{{segment_option}}</strong>  {{bool(flags[flag][segment][segment_option])}}</td>
+    <th>{{segment}}
+    <input type="checkbox" data-toggle="switch" id="{{flag}}_{{segment}}" {{"checked" if segmentation[segment]["enabled"] else ""}} {{"disabled" if segmentation[segment]["for_all"] else ""}} />
+
+    <label class="checkbox" for="toall_{{flag}}_{{segment}}">
+        <input type="checkbox" value="" id="toall_{{flag}}" data-toggle="checkbox" {{"checked" if segmentation[segment]["for_all"] else ""}}>for all</label>
+    </label>
+    </th>
+
+%if segmentation[segment].get("options", None):
+%options = segmentation[segment].get("options")
+%for option in options:
+    <td>{{option}}
+    <input type="checkbox" data-toggle="switch" id="{{flag}}_{{segment}}" {{"checked" if options[option] else ""}} /></td>
 %end
 %end
-    <td>+</td>
   </tr>
 %end
 %end
-  <tr>
-    <th>+</th>
-  </tr>
 </table>
+<hr>
 %end
+
+<input type="submit" value="Save" />
+</form>
+
