@@ -48,3 +48,88 @@ Segmentation:
 <input type="submit" value="Save" />
 </form>
 
+
+
+<div id="container">
+    <h1 id="page-title">{{application}}</h1>
+
+    <ul id="header-nav">
+        <li class="selected">Features</li>
+        <li>Segments</li>
+    </ul>
+
+    %for flag in flags:
+
+        <div class="block">
+            <div class="block-header header">
+                <h3 title="{{flags[flag]}}">{{flag}}</h3>
+                <span class="switch header-switch"><input type="checkbox" class="toggle" checked /></span>
+            </div>
+
+
+            <div class="segmentation-block">
+                <div class="block-header sub-header">
+                    <h3>Segmentation</h3>
+                </div>
+
+                <div class="options-wrapper">
+                    <div class="block-header sub-sub-header">
+                        <h3>Platform</h3>
+                        <span class="switch"><input type="checkbox" class="toggle" checked /></span>
+                    </div>
+                    <div class="options-block">
+                        <label><input type="checkbox" checked />UAE</label>
+                        <label><input type="checkbox" checked />Saudi Arabia</label>
+                        <label><input type="checkbox" />Lebanon</label>
+                        <label><input type="checkbox" />Oman</label>
+                        <label><input type="checkbox" />Qatar</label>
+                        <label><input type="checkbox" />Kuwait</label>
+                    </div>
+                </div>
+
+                <div class="options-wrapper">
+                    <div class="block-header sub-sub-header">
+                        <h3>Country</h3>
+                        <span class="switch"><input type="checkbox" class="toggle" checked /></span>
+                    </div>
+                    <div class="options-block">
+                        <label><input type="checkbox" />UAE</label>
+                        <label><input type="checkbox" />Saudi Arabia</label>
+                        <label><input type="checkbox" />Lebanon</label>
+                        <label><input type="checkbox" />Oman</label>
+                        <label><input type="checkbox" />Qatar</label>
+                        <label><input type="checkbox" />Kuwait</label>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    %end
+</div>
+<script type="text/javascript">
+var elems = Array.prototype.slice.call(document.querySelectorAll('.toggle'));
+elems.forEach(function(html) {
+    var switchery = new Switchery(html, { size: 'small' });
+});
+
+$('.switchery').click(function(e) {
+    parent_div = $(this).parent().parent().parent();
+
+    if ($(this).parent().hasClass("header-switch")) {
+        parent_div.find(".segmentation-block").fadeToggle("fast");
+    } else {
+        parent_div.find(".options-block").fadeToggle("fast");
+    }
+
+    var checkbox = $(this).prev();
+    isChecked = checkbox.is(':checked');
+
+    if (isChecked) {
+    } else {
+        parent_div.find("input:checkbox").each(function() {
+            this.checked = false;
+        });
+    }
+});
+</script>
+

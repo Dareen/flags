@@ -1,0 +1,48 @@
+        /*background-color: #F0F8FE  
+        font-face: proximanova
+        black text color: #3b4245  
+        grey text on features/segment: #979a9c  
+        feature-segment-border: #D9E5EE  
+        feature-segment-background: #E8F4FD  */
+
+@font-face {
+  font-family: ss-pikachu;
+  src: url("fonts/ss-pikachu.eot");
+  src: url("fonts/ss-pikachu.eot?#iefix") format("embedded-opentype"), url("fonts/ss-pikachu.svg") format("svg"), url("fonts/ss-pikachu.ttf") format("truetype"), url("fonts/ss-pikachu.woff") format("woff");
+  font-weight: lighter;
+  font-style: normal;
+}
+
+body {background-color: #F0F8FE; color: #3b4245; font-family: Arial, sans-serif; margin:0 14px 50px; padding: 0; font-size:14px; font-family: proxima-nova, arial, sans-serif;}
+#container {max-width: 550px; margin: 50px auto 0}
+h1 {font-size: 28px; text-align: center; margin: 30px 0}
+
+ul{margin:0; padding:0;}
+#home-nav li {margin:0 auto 20px; padding:10px 0; list-style-type: none; text-align: center; background-color: white; width:60%; border:1px solid #D9E5EE; font-weight: bold}
+#home-nav #add {margin-top:40px;}
+
+#header-nav {margin-bottom: 120px}
+#header-nav li {margin:0; padding:10px 0; list-style-type: none; border:1px solid #D9E5EE; text-align: center; float: left; width: 49%; background-color: #E8F4FD }
+#header-nav .selected {background-color: white; font-weight: bold}
+
+.block {margin-top:50px; clear: both; border: 1px solid #cacaca;}
+.block-header {background-color: white; width: 96%; padding: 12px 2%; position: relative; border-bottom: 1px solid #cacaca;}
+.block-header h3 {margin: 0; color: #3b4245; font-size: 14px}
+.block-header .switch {position: absolute; top:0; right: 0; margin: 6px 6px 0 0}
+
+.sub-header h3 {margin-left:2%;}
+
+.sub-sub-header {background-color: #EFF0F0;}
+.sub-sub-header h3 {margin-left:4%;}
+.sub-sub-header .switch {margin-right: 4%}
+
+.options-block {background-color: white; padding: 14px}
+.options-block label {display:inline-block; padding: 10px}
+
+
+
+#segment-list {margin:0; padding:0; background-color: white; padding: 6px}
+#segment-list li {margin:0 0 4px 0; list-style-type:none; background-color: #EFF0F0; padding: 10px 0 10px 20px; position: relative;}
+#segment-list li span {position: absolute; top:0; right: 0; margin:10px 10px 0 0;}
+#segment-list #segment-list-header {background-color: white; padding-left:4px;}
+#segment-list #add-segment {background-color: white}

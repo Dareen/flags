@@ -1,4 +1,4 @@
-%rebase('layout', title='Flags')
+%rebase('layout', title='Applications')
 
 <h1>Flags Service</h1>
 
@@ -6,11 +6,15 @@ Code and Docs: <a href="https://github.com/dubizzle/flags">flags on github</a><b
 
 Default flags value: <b>{{default}}<b/> <br /><br /><br />
 
-<h2>Applications:</h2>
-<form method="POST", action="">
-    <input type="button" value="Add Application" />
-</form>
 
-%for application in applications:
-   <a href="{{app.get_url('flags', application=application)}}">{{application}}</a><br />
-%end
+
+
+<div id="container">
+    <h1 id="page-title">Control Center</h1>
+    <ul id="home-nav">
+        %for application in applications:
+           <li><a href="{{app.get_url('flags', application=application)}}">{{application}}</a></li>
+        %end
+        <li id="add">+ Add a new application</li>
+    </ul>
+</div>
