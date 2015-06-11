@@ -42,37 +42,46 @@ class ZKAdapter(BaseStoreAdapter):
             return []
         return apps
 
-    def get_all_keys(self, application):
+    def get_all_keys(self, *path):
         try:
-            keys = self.zk.get_children(self.get_key(application))
+            keys = self.zk.get_children(self.get_key(*path))
         except NoNodeError:
             return []
         return keys
 
-    def get_all_items(self, application):
-        keys = self.get_all_keys(application)
+    def get_all_features(self, application):
+        keys = self.get_all_keys(application, settings.FEATURES_KEY)
+        items = dict()
+        for key in keys:
+            items[key] = self.read_feature(application, key)
+        return items
+
+    def get_all_segments(self, application):
+        keys = self.get_all_keys(application, settings.SEGMENTS_KEY)
         items = dict()
         for key in keys:
             items[key] = self.read(application, key)
         return items
 
-    def create(self, application, key, value):
+    def create_feature(self, application, key, value):
         # Ensure a path, create if necessary
-        app_path = self.get_key(application)
+        app_path = self.get_key(application, settings.FEATURES_KEY)
         self.zk.ensure_path(app_path)
 
-        node_path = self.get_key(application, key)
+        node_path = self.get_key(application, settings.FEATURES_KEY, key)
         try:
             # Create a node with data
             self.zk.create(node_path, value)
         except NodeExistsError:
             raise KeyExistsError
 
-    def read(self, application, key):
+    def read_feature(self, application, key):
         try:
             # zk.retry will automatically retry upon zk connection failure
-            data, stat = self.zk.retry(self.zk.get, self.get_key(application,
-                                                                 key))
+            data, stat = self.zk.retry(
+                self.zk.get,
+                self.get_key(application, settings.FEATURES_KEY, key)
+            )
             try:
                 return json.loads(data)
             except ValueError:
@@ -81,16 +90,16 @@ class ZKAdapter(BaseStoreAdapter):
         except NoNodeError:
             raise KeyDoesNotExistError
 
-    def update(self, application, key, value):
-        node_path = self.get_key(application, key)
+    def update_feature(self, application, key, value):
+        node_path = self.get_key(application, settings.FEATURES_KEY, key)
 
         try:
             self.zk.set(node_path, value)
         except NoNodeError:
             raise KeyDoesNotExistError
 
-    def delete(self, application, key):
-        node_path = self.get_key(application, key)
+    def delete_feature(self, application, key):
+        node_path = self.get_key(application, settings.FEATURES_KEY, key)
 
         try:
             self.zk.delete(node_path)

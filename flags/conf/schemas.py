@@ -1,12 +1,11 @@
 from schema import Schema, Optional
 
+# TODO: Schemas should be dynamic based on the application specific segmentation
 flags_schema = Schema({
     "enabled": bool,
-    "for_all": bool,
     Optional("segmentation"): {
         Optional(basestring): {
             "enabled": bool,
-            "for_all": bool,
             Optional("options"): {
                 Optional(basestring): bool
             }

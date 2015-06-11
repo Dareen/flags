@@ -1,12 +1,9 @@
 DEBUG = True
 LOG_LEVEL = "DEBUG"
 ADMIN_MODE = True
+DEFAULT_VALUE = True
 
 HOST = "localhost"
 PORT = 9595
-
-REDIS_HOST = "localhost"
-REDIS_PORT = 6379
-REDIS_DB = 0
 
 ZK_HOSTS = "localhost:2181"

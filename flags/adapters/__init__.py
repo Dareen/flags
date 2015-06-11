@@ -49,21 +49,25 @@ class BaseStoreAdapter(object):
         pass
 
     @abstractmethod
-    def get_all_items(self, application):
+    def get_all_features(self, application):
         pass
 
     @abstractmethod
-    def create(self, application, key, value):
+    def get_all_segments(self, application):
         pass
 
     @abstractmethod
-    def read(self, application, key):
+    def create_feature(self, application, key, value):
         pass
 
     @abstractmethod
-    def update(self, application, key, value):
+    def read_feature(self, application, key):
         pass
 
     @abstractmethod
-    def delete(self, application, key):
+    def update_feature(self, application, key, value):
+        pass
+
+    @abstractmethod
+    def delete_feature(self, application, key):
         pass

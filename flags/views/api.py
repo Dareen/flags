@@ -24,13 +24,14 @@ class APIView(BottleView):
     def index(self, application):
         response.headers["Content-Type"] = "application/json"
         with self.adapter_type() as adapter:
-            return json.dumps(adapter.get_all_keys(application))
+            return json.dumps(adapter.get_all_keys(application,
+                                                   settings.FEATURES_KEY))
 
     def get(self, application, key):
         def read_from_adapter(application, key):
             try:
                 with self.adapter_type() as adapter:
-                    return adapter.read(application, key)
+                    return adapter.read_feature(application, key)
             except KeyDoesNotExistError:
                 raise HTTPResponse(body="Key does not exist!",
                                    status=NOT_FOUND)
@@ -44,36 +45,38 @@ class APIView(BottleView):
                 segment = segmentation.get(key, None)
 
                 if segment:
-                    if segment["for_all"]:
-                        if segment["enabled"] != settings.DEFAULT_VALUE:
-                            # this segment is enabled/disabled for all
-                            return segment["enabled"]
+                    if segment["enabled"] != settings.DEFAULT_VALUE:
+                        # this segment is enabled/disabled for all
+                        return segment["enabled"]
                     else:
                         # not enabled/disabled for all, check user specific
                         # value
-                        segment_options = segment.get("options", None)
-                        if segment_options:
-                            segmented_value = segment_options.get(
-                                request.GET[key],
-                                settings.DEFAULT_VALUE
-                            )
-                            # if it's disabled, return immediately
-                            if segmented_value != settings.DEFAULT_VALUE:
-                                return segmented_value
+                        segment_options = segment["options"]
+                        segmented_value = segment_options.get(
+                            request.GET[key],
+                            settings.DEFAULT_VALUE
+                        )
+                        # if it's disabled, return immediately, no need to
+                        # parse the rest of the segments, one disabled segment
+                        # is enough to disable it fot that user
+                        if segmented_value != settings.DEFAULT_VALUE:
+                            return segmented_value
 
-            # the flag is segmented, but the user-specific segment is not
-            # specified
+            # the user-specific segment is not available in this application
             return settings.DEFAULT_VALUE
 
         value = read_from_adapter(application, key)
-        if value["for_all"]:
-            # this key is disabled/enabled for all
-            return {key: value["enabled"]}
+        # If DEFAULT_VALUE is True, then features are Enabled unless stated
+        # otherwise
+        # If DEFAULT_VALUE is False, then features are Disabled unless stated
+        # otherwise
+        if value["enabled"] != settings.DEFAULT_VALUE:
+            # the feature itself is disabled (if DEFAULT_VALUE is True) so no
+            # need to look at the segmentation
+            return value["enabled"]
         else:
             # check segmentation
-            segmentation = value.get("segmentation", None)
-            if not segmentation:
-                return {key: value["enabled"]}
+            segmentation = value["segmentation"]
 
             user_flag = parse_segmentation(segmentation)
             return {key: user_flag}
@@ -88,7 +91,7 @@ class APIView(BottleView):
             value = json.dumps(request.json)
             try:
                 with self.adapter_type() as adapter:
-                    adapter.create(application, key, value)
+                    adapter.create_feature(application, key, value)
                 return HTTPResponse(status=CREATED)
             except KeyExistsError:
                 msg = ("Key already exists! You might want to use PUT instead"
@@ -107,7 +110,7 @@ class APIView(BottleView):
             value = json.dumps(request.json)
             try:
                 with self.adapter_type() as adapter:
-                    adapter.update(application, key, value)
+                    adapter.update_feature(application, key, value)
                 return HTTPResponse(status=NO_CONTENT)
             except KeyDoesNotExistError:
                 msg = ("Key does not exists! You might want to use POST "
@@ -120,7 +123,7 @@ class APIView(BottleView):
         if settings.ADMIN_MODE:
             try:
                 with self.adapter_type() as adapter:
-                    adapter.delete(application, key)
+                    adapter.delete_feature(application, key)
                 return HTTPResponse(status=NO_CONTENT)
             except KeyDoesNotExistError:
                 return HTTPResponse(body="Key does not exist!",

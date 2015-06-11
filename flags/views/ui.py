@@ -34,17 +34,18 @@ def register_ui_views(app):
     @app.route('/', name='index')
     @view('index')  # Name of template
     def index():
-        default = settings.DEFAULT_VALUE
+        default = "Enabled" if settings.DEFAULT_VALUE else "Disabled"
         with adapter_type() as adapter:
             applications = adapter.get_applications()
 
         #  any local variables can be used in the template
         return locals()
 
-    @app.get('/<application>', name='flags')
-    @app.post('/<application>')
-    @view('flags')  # Name of template
-    def flags(application):
+    @app.get('/<application>/features', name='features')
+    @app.get('/<application>', name='features')
+    @app.post('/<application>/features')
+    @view('features')  # Name of template
+    def features(application):
         def post():
             # TODO
             application = request.forms
@@ -53,10 +54,22 @@ def register_ui_views(app):
         if request.method == "POST":
             post()
 
-        default = settings.DEFAULT_VALUE
+        default = "Enabled" if settings.DEFAULT_VALUE else "Disabled"
 
         with adapter_type() as adapter:
-            flags = adapter.get_all_items(application)
+            flags = adapter.get_all_features(application)
+
+        #  any local variables can be used in the template
+        return locals()
+
+
+    @app.get('/<application>/segments', name='segments')
+    @app.post('/<application>/segments')
+    @view('segments')  # Name of template
+    def segments(application):
+
+        with adapter_type() as adapter:
+            flags = adapter.get_all_segments(application)
 
         #  any local variables can be used in the template
         return locals()

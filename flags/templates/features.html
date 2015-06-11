@@ -7,7 +7,7 @@
 
     <ul id="header-nav">
         <li class="selected">Features</li>
-        <li>Segments</li>
+        <li><a href="{{app.get_url('segments', application=application)}}">Segments</a></li>
     </ul>
 
     %for flag in flags:
