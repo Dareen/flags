@@ -1,54 +1,6 @@
 %rebase('layout', title='Flags', parent_url=app.get_url('index'))
 
-<h1>Application: {{application}} - READ ONLY</h1>
-
-{{default}} except if stated otherwise. <br/><br/>
-
-
-%for flag in flags:
-<div title="{{flags[flag]}}"><strong>{{flag}}</strong></div>
-
-<form method="POST" action="{{app.get_url('flags', application=application)}}">
-
-
-<input type="checkbox" data-toggle="switch" id="{{flag}}" {{"checked" if flags[flag]["enabled"] else ""}} {{"disabled" if flags[flag]["for_all"] else ""}} />
-
-<label class="checkbox" for="toall_{{flag}}">
-    <input type="checkbox" value="" id="toall_{{flag}}" data-toggle="checkbox" {{"checked" if flags[flag]["for_all"] else ""}}>for all</label>
-</label><br/>
-
-Segmentation:
-<table border=".5" >
-%if flags[flag].get("segmentation", None):
-%segmentation = flags[flag].get("segmentation")
-%for segment in segmentation:
-  <tr>
-    <th>{{segment}}
-    <input type="checkbox" data-toggle="switch" id="{{flag}}_{{segment}}" {{"checked" if segmentation[segment]["enabled"] else ""}} {{"disabled" if segmentation[segment]["for_all"] else ""}} />
-
-    <label class="checkbox" for="toall_{{flag}}_{{segment}}">
-        <input type="checkbox" value="" id="toall_{{flag}}" data-toggle="checkbox" {{"checked" if segmentation[segment]["for_all"] else ""}}>for all</label>
-    </label>
-    </th>
-
-%if segmentation[segment].get("options", None):
-%options = segmentation[segment].get("options")
-%for option in options:
-    <td>{{option}}
-    <input type="checkbox" data-toggle="switch" id="{{flag}}_{{segment}}" {{"checked" if options[option] else ""}} /></td>
-%end
-%end
-  </tr>
-%end
-%end
-</table>
-<hr>
-%end
-
-<input type="submit" value="Save" />
-</form>
-
-
+{{default}} unless stated otherwise. <br/><br/>
 
 <div id="container">
     <h1 id="page-title">{{application}}</h1>
@@ -63,45 +15,38 @@ Segmentation:
         <div class="block">
             <div class="block-header header">
                 <h3 title="{{flags[flag]}}">{{flag}}</h3>
-                <span class="switch header-switch"><input type="checkbox" class="toggle" checked /></span>
+                <span class="switch header-switch"><input id="{{flag}}_checkbox" type="checkbox" class="toggle" {{"checked" if flags[flag]["enabled"] else ""}} /></span>
             </div>
 
+            %segmentation = flags[flag].get("segmentation", None)
+            %if segmentation:
 
-            <div class="segmentation-block">
+                <div class="segmentation-block">
                 <div class="block-header sub-header">
                     <h3>Segmentation</h3>
                 </div>
 
-                <div class="options-wrapper">
-                    <div class="block-header sub-sub-header">
-                        <h3>Platform</h3>
-                        <span class="switch"><input type="checkbox" class="toggle" checked /></span>
-                    </div>
-                    <div class="options-block">
-                        <label><input type="checkbox" checked />UAE</label>
-                        <label><input type="checkbox" checked />Saudi Arabia</label>
-                        <label><input type="checkbox" />Lebanon</label>
-                        <label><input type="checkbox" />Oman</label>
-                        <label><input type="checkbox" />Qatar</label>
-                        <label><input type="checkbox" />Kuwait</label>
-                    </div>
-                </div>
+                %for segment in segmentation:
+                    <div class="options-wrapper">
+                        <div class="block-header sub-sub-header">
+                            <h3>{{segment}}</h3>
+                            <span class="switch"><input id="{{flag}}_{{segment}}_checkbox" type="checkbox" class="toggle" {{"checked" if segmentation[segment]["enabled"] else ""}} /></span>
+                        </div>
 
-                <div class="options-wrapper">
-                    <div class="block-header sub-sub-header">
-                        <h3>Country</h3>
-                        <span class="switch"><input type="checkbox" class="toggle" checked /></span>
+                        %options = segmentation[segment].get("options", None)
+                        %if options:
+                            %for option in options:
+                                <div class="options-block">
+                                    <label><input id="{{flag}}_{{segment}}_{{option}}_checkbox" type="checkbox" {{"checked" if options[option] else ""}} />{{option}}</label>
+                                </div>
+                            %end
+                        %end
                     </div>
-                    <div class="options-block">
-                        <label><input type="checkbox" />UAE</label>
-                        <label><input type="checkbox" />Saudi Arabia</label>
-                        <label><input type="checkbox" />Lebanon</label>
-                        <label><input type="checkbox" />Oman</label>
-                        <label><input type="checkbox" />Qatar</label>
-                        <label><input type="checkbox" />Kuwait</label>
-                    </div>
+                %end
+
                 </div>
-            </div>
+            %end
+
         </div>
 
     %end
