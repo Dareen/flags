@@ -57,10 +57,15 @@ class ZKAdapter(BaseStoreAdapter):
         return items
 
     def get_all_segments(self, application):
-        keys = self.get_all_keys(application, settings.SEGMENTS_KEY)
+        segments = self.get_all_keys(application, settings.SEGMENTS_KEY)
         items = dict()
-        for key in keys:
-            items[key] = self.read(application, key)
+        for segment in segments:
+            # Read the options in each segment
+            items[segment] = self.get_all_keys(
+                application,
+                settings.SEGMENTS_KEY,
+                segment
+            )
         return items
 
     def create_feature(self, application, key, value):
@@ -76,11 +81,17 @@ class ZKAdapter(BaseStoreAdapter):
             raise KeyExistsError
 
     def read_feature(self, application, key):
+        return self.read(application, settings.FEATURES_KEY, key)
+
+    def read_segment(self, application, key):
+        return self.read(application, settings.SEGMENTS_KEY, key)
+
+    def read(self, *key_path):
         try:
             # zk.retry will automatically retry upon zk connection failure
             data, stat = self.zk.retry(
                 self.zk.get,
-                self.get_key(application, settings.FEATURES_KEY, key)
+                self.get_key(*key_path)
             )
             try:
                 return json.loads(data)

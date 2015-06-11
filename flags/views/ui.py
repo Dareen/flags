@@ -59,9 +59,10 @@ def register_ui_views(app):
         with adapter_type() as adapter:
             flags = adapter.get_all_features(application)
 
+        # TODO: match the flags with the application segmenation
+
         #  any local variables can be used in the template
         return locals()
-
 
     @app.get('/<application>/segments', name='segments')
     @app.post('/<application>/segments')
@@ -69,7 +70,7 @@ def register_ui_views(app):
     def segments(application):
 
         with adapter_type() as adapter:
-            flags = adapter.get_all_segments(application)
+            segments = adapter.get_all_segments(application)
 
         #  any local variables can be used in the template
         return locals()
