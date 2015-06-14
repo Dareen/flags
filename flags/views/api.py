@@ -1,4 +1,3 @@
-import json
 import logging
 from httplib import (CREATED, NOT_FOUND, NO_CONTENT, CONFLICT, UNAUTHORIZED,
                      BAD_REQUEST)
@@ -41,7 +40,7 @@ class APIView(BottleView):
             except SchemaError as e:
                 return HTTPResponse(status=BAD_REQUEST, body=e)
 
-            value = json.dumps(request.json)
+            value = request.json
             try:
                 with self.adapter_type() as adapter:
                     adapter.create_feature(application, key, value)
@@ -60,7 +59,7 @@ class APIView(BottleView):
             except SchemaError as e:
                 return HTTPResponse(status=BAD_REQUEST, body=e)
 
-            value = json.dumps(request.json)
+            value = request.json
             try:
                 with self.adapter_type() as adapter:
                     adapter.update_feature(application, key, value)

@@ -81,11 +81,11 @@ class ZKAdapter(BaseStoreAdapter):
 
         # default segmentation
         if value is None:
-            value = json.dumps(self._prepare_default_feature_dict(application))
+            value = self._prepare_default_feature_dict(application)
 
         try:
             # Create a node with data
-            self.zk.create(node_path, value)
+            self.zk.create(node_path, json.dumps(value))
         except NodeExistsError:
             raise KeyExistsError
 
@@ -153,28 +153,28 @@ class ZKAdapter(BaseStoreAdapter):
                 "enabled": settings.DEFAULT_VALUE,
                 "options": dict()
             }
-            self.update_feature(application, feature, json.dumps(feature_dict))
+            self.update_feature(application, feature, feature_dict)
 
     def _update_new_segment_option(self, application, segment, option):
         features = self.get_all_keys(application, settings.FEATURES_KEY)
         for feature in features:
             feature_dict = self.read_feature(application, feature)
             feature_dict["segmentation"][segment]["options"][option] = settings.DEFAULT_VALUE
-            self.update_feature(application, feature, json.dumps(feature_dict))
+            self.update_feature(application, feature, feature_dict)
 
     def _update_deleted_segment_option(self, application, segment, option):
         features = self.get_all_keys(application, settings.FEATURES_KEY)
         for feature in features:
             feature_dict = self.read_feature(application, feature)
             del feature_dict["segmentation"][segment]["options"][option]
-            self.update_feature(application, feature, json.dumps(feature_dict))
+            self.update_feature(application, feature, feature_dict)
 
     def _update_deleted_segment(self, application, segment):
         features = self.get_all_keys(application, settings.FEATURES_KEY)
         for feature in features:
             feature_dict = self.read_feature(application, feature)
             del feature_dict["segmentation"][segment]
-            self.update_feature(application, feature, json.dumps(feature_dict))
+            self.update_feature(application, feature, feature_dict)
 
     def create_segment_option(self, application, segment, option):
         # Ensure a path, create if necessary
@@ -215,7 +215,7 @@ class ZKAdapter(BaseStoreAdapter):
         node_path = self.get_key(application, settings.FEATURES_KEY, key)
 
         try:
-            self.zk.set(node_path, value)
+            self.zk.set(node_path, json.dumps(value))
         except NoNodeError:
             raise KeyDoesNotExistError
 
