@@ -60,6 +60,18 @@
         </div>
 
     %end
+
+    <ul id="add-misc">
+    <li class="add" id="add-feature">
+            <span class="add-text">+ Add a new feature</span>
+            <span class="add-form">
+                <form method="POST">
+                    <input type="text" name="new_feature" class="add-form-input" />
+                    <input type="submit" />
+                </form>
+            </span>
+        </li>
+    </ul>
 </div>
 <script type="text/javascript">
 $('.ios-toggle').click(function(e) {
@@ -77,6 +89,11 @@ $('.ios-toggle').click(function(e) {
             this.checked = false;
         });
     }
+});
+$('.add-text').click(function(e) {
+    $(this).next().show();
+    $(this).next().find(".add-form-input").focus();
+    $(this).hide();
 });
 </script>
 

@@ -42,10 +42,10 @@
 
     <ul id="add-misc">
     <li class="add" id="add-segment">
-            <span class="add-text">+ Add a new Segment</span>
+            <span class="add-text">+ Add a new segment</span>
             <span class="add-form">
-                <form>
-                    <input type="text" class="add-form-input" />
+                <form method="POST">
+                    <input type="text" name="new_segment" class="add-form-input" />
                     <input type="submit" />
                 </form>
             </span>
@@ -53,5 +53,12 @@
     </ul>
 
 </div>
+<script type="text/javascript">
+$('.add-text').click(function(e) {
+    $(this).next().show();
+    $(this).next().find(".add-form-input").focus();
+    $(this).hide();
+});
+</script>
 
 

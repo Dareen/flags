@@ -34,8 +34,6 @@ def register_ui_views(app):
             with adapter_type() as adapter:
                 adapter.create_application(application_name)
 
-            redirect(app.get_url('applications'))
-
         default = "Enabled" if settings.DEFAULT_VALUE else "Disabled"
         with adapter_type() as adapter:
             applications = adapter.get_applications()
@@ -43,33 +41,29 @@ def register_ui_views(app):
         #  any local variables can be used in the template
         return locals()
 
-    @app.get('/<application>/features', name='features')
-    @app.get('/<application>', name='features')
-    @app.post('/<application>/features')
+    @app.route('/<application>/features', name='features', method=["GET", "POST"])
+    # @app.get('/<application>', name='features')
     @view('features')  # Name of template
     def features(application):
-        def post():
-            # TODO
-            application = request.forms
-            redirect(app.get_url('applications'))
-
         if request.method == "POST":
-            post()
+            feature_name = request.forms.new_feature
+            with adapter_type() as adapter:
+                adapter.create_feature(application, feature_name)
 
         default = "Enabled" if settings.DEFAULT_VALUE else "Disabled"
-
         with adapter_type() as adapter:
             flags = adapter.get_all_features(application)
-
-        # TODO: match the flags with the application segmenation
 
         #  any local variables can be used in the template
         return locals()
 
-    @app.get('/<application>/segments', name='segments')
-    @app.post('/<application>/segments')
+    @app.route('/<application>/segments', name='segments', method=["GET", "POST"])
     @view('segments')  # Name of template
     def segments(application):
+        if request.method == "POST":
+            segment_name = request.forms.new_segment
+            with adapter_type() as adapter:
+                adapter.create_segment(application, segment_name)
 
         with adapter_type() as adapter:
             segments = adapter.get_all_segments(application)
