@@ -1,8 +1,3 @@
-#
-#  Part of the python-bottle-skeleton project at:
-#
-#      https://github.com/linsomniac/python-bottle-skeleton
-#
 import os
 
 from bottle import (view, TEMPLATE_PATH, request, BaseTemplate, redirect,
@@ -30,10 +25,17 @@ def register_ui_views(app):
         'Serve static content.'
         return static_file(path, root='flags/static/')
 
-    # Index page: list of available applications
-    @app.route('/', name='index')
-    @view('index')  # Name of template
+    @app.route('/', name='applications', method=["GET", "POST"])
+    @view('applications')  # Name of template
     def index():
+        if request.method == "POST":
+            # TODO: exception handling for ApplicationExistsError
+            application_name = request.forms.new_application
+            with adapter_type() as adapter:
+                adapter.create_application(application_name)
+
+            redirect(app.get_url('applications'))
+
         default = "Enabled" if settings.DEFAULT_VALUE else "Disabled"
         with adapter_type() as adapter:
             applications = adapter.get_applications()
@@ -49,7 +51,7 @@ def register_ui_views(app):
         def post():
             # TODO
             application = request.forms
-            redirect(app.get_url('index'))
+            redirect(app.get_url('applications'))
 
         if request.method == "POST":
             post()

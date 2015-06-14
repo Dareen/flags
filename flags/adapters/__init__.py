@@ -57,6 +57,18 @@ class BaseStoreAdapter(object):
         pass
 
     @abstractmethod
+    def create_application(self, application):
+        pass
+
+    @abstractmethod
+    def create_segment(self, application, segment):
+        pass
+
+    @abstractmethod
+    def create_segment_option(self, application, segment, option):
+        pass
+
+    @abstractmethod
     def create_feature(self, application, key, value):
         pass
 
