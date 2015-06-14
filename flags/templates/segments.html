@@ -5,24 +5,52 @@
 
     <ul id="header-nav">
         <li><a href="{{app.get_url('features', application=application)}}">Features</a></li>
-        <li class="selected">Segments</li>
+        <li class="selected"><a href="{{app.get_url('segments', application=application)}}">Segments</a></li>
     </ul>
 
     %for segment in segments:
         <ul id="segment-list">
 
-            <li id="segment-list-header" title="{{segments[segment]}}">{{segment}}<span>x</span></li>
+            <li id="segment-list-header" title="{{segments[segment]}}">{{segment}}<span class="delete">x</span></li>
 
             %options = segments[segment]
             %for option in options:
-                <li>{{option}}<span>x</span></li>
+                <li>{{option}}<span class="delete">x</span></li>
             %end
 
-            <li id="add-segment">+ Add a new {{segment}}</li>
+            <li class="add" id="add-segment">
+
+            <span class="add-text">+ Add a new {{segment}}</span>
+            <span class="add-form">
+                <form>
+                    <input type="text" class="add-form-input" />
+                    <input type="submit" />
+                </form>
+            </span>
+            </li>
         </ul>
     %end
 
-    <li id="add">+ Add a new Segment</li>
+    <script type="text/javascript">
+    $('.add-text').click(function(e) {
+        $(this).next().show();
+        $(this).next().find(".add-form-input").focus();
+        $(this).hide();
+    });
+    </script>
+
+
+    <ul id="add-misc">
+    <li class="add" id="add-segment">
+            <span class="add-text">+ Add a new Segment</span>
+            <span class="add-form">
+                <form>
+                    <input type="text" class="add-form-input" />
+                    <input type="submit" />
+                </form>
+            </span>
+        </li>
+    </ul>
 
 </div>
 
