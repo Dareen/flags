@@ -1,7 +1,7 @@
 import os
 
 from bottle import (view, TEMPLATE_PATH, request, BaseTemplate, redirect,
-                    static_file)
+                    static_file, abort)
 
 from flags.conf import settings
 from flags.adapters.zk_adapter import ZKAdapter
@@ -31,8 +31,12 @@ def register_ui_views(app):
         if request.method == "POST":
             # TODO: exception handling for ApplicationExistsError
             application_name = request.forms.new_application
-            with adapter_type() as adapter:
-                adapter.create_application(application_name)
+            if application_name:
+                with adapter_type() as adapter:
+                    adapter.create_application(application_name)
+            else:
+                # TODO: format errors in a nice UI
+                abort(400, "Please provide a name for the new application.")
 
         default = "Enabled" if settings.DEFAULT_VALUE else "Disabled"
         with adapter_type() as adapter:
@@ -47,8 +51,13 @@ def register_ui_views(app):
     def features(application):
         if request.method == "POST":
             feature_name = request.forms.new_feature
-            with adapter_type() as adapter:
-                adapter.create_feature(application, feature_name)
+            if feature_name:
+                # TODO: exception handling
+                with adapter_type() as adapter:
+                    adapter.create_feature(application, feature_name)
+            else:
+                # TODO: format errors in a nice UI
+                abort(400, "Please provide a name for the new feature.")
 
         default = "Enabled" if settings.DEFAULT_VALUE else "Disabled"
         with adapter_type() as adapter:
@@ -62,11 +71,29 @@ def register_ui_views(app):
     def segments(application):
         if request.method == "POST":
             segment_name = request.forms.new_segment
-            with adapter_type() as adapter:
-                adapter.create_segment(application, segment_name)
+            if segment_name:
+                # TODO: exception handling
+                with adapter_type() as adapter:
+                    adapter.create_segment(application, segment_name)
+            else:
+                # TODO: format errors in a nice UI
+                abort(400, "Please provide a name for the new segment.")
 
         with adapter_type() as adapter:
             segments = adapter.get_all_segments(application)
 
         #  any local variables can be used in the template
         return locals()
+
+    @app.post('/<application>/options/<segment>', name='options')
+    def options(application, segment):
+        option_name = request.forms.new_option
+        if option_name:
+            # TODO: exception handling
+            with adapter_type() as adapter:
+                adapter.create_segment_option(application, segment, option_name)
+        else:
+            # TODO: format errors in a nice UI
+            abort(400, "Please provide a name for the new segment option.")
+
+        redirect(app.get_url('segments', application=application))
