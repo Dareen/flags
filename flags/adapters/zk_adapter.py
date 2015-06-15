@@ -25,6 +25,8 @@ class ZKAdapter(BaseStoreAdapter):
     def get_key(self, *suffixes):
         # *suffixes: anything to be added after the prefix and version
         # e.g. application name, key, segments ... etc.
+        def title(s): return s.title()
+        suffixes = map(title, suffixes)
         path = super(ZKAdapter, self).get_key(*suffixes)
         # append a preceeding slash in the beginning, ZK specific format
         path = "/%s" % path
@@ -146,6 +148,7 @@ class ZKAdapter(BaseStoreAdapter):
             raise SegmentExistsError
 
     def _update_new_segment(self, application, segment):
+        segment = segment.title()
         features = self.get_all_keys(application, settings.FEATURES_KEY)
         for feature in features:
             feature_dict = self.read_feature(application, feature)
@@ -156,6 +159,8 @@ class ZKAdapter(BaseStoreAdapter):
             self.update_feature(application, feature, feature_dict)
 
     def _update_new_segment_option(self, application, segment, option):
+        segment = segment.title()
+        option = option.title()
         features = self.get_all_keys(application, settings.FEATURES_KEY)
         for feature in features:
             feature_dict = self.read_feature(application, feature)
@@ -163,6 +168,8 @@ class ZKAdapter(BaseStoreAdapter):
             self.update_feature(application, feature, feature_dict)
 
     def _update_deleted_segment_option(self, application, segment, option):
+        segment = segment.title()
+        option = option.title()
         features = self.get_all_keys(application, settings.FEATURES_KEY)
         for feature in features:
             feature_dict = self.read_feature(application, feature)
@@ -170,6 +177,7 @@ class ZKAdapter(BaseStoreAdapter):
             self.update_feature(application, feature, feature_dict)
 
     def _update_deleted_segment(self, application, segment):
+        segment = segment.title()
         features = self.get_all_keys(application, settings.FEATURES_KEY)
         for feature in features:
             feature_dict = self.read_feature(application, feature)

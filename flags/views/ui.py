@@ -46,9 +46,11 @@ def register_ui_views(app):
         #  any local variables can be used in the template
         return locals()
 
-    @app.route('/<application>/features', name='features', method=["GET", "POST"])
+    @app.route('/<application>/features', name='features',
+               method=["GET", "POST"])
     @view('features')  # Name of template
     def features(application):
+        application = application.title()
 
         if request.method == "POST":
             feature_chck_name_tmpl = "%s_checkbox"
@@ -104,9 +106,11 @@ def register_ui_views(app):
 
         redirect(app.get_url('features', application=application))
 
-    @app.route('/<application>/segments', name='segments', method=["GET", "POST"])
+    @app.route('/<application>/segments', name='segments',
+               method=["GET", "POST"])
     @view('segments')  # Name of template
     def segments(application):
+        application = application.title()
         if request.method == "POST":
             segment_name = request.forms.new_segment
             if segment_name:
@@ -129,7 +133,8 @@ def register_ui_views(app):
         if option_name:
             # TODO: exception handling
             with adapter_type() as adapter:
-                adapter.create_segment_option(application, segment, option_name)
+                adapter.create_segment_option(application, segment,
+                                              option_name)
         else:
             # TODO: format errors in a nice UI
             abort(400, "Please provide a name for the new segment option.")
