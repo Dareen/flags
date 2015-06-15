@@ -5,7 +5,7 @@ from bottle import (view, TEMPLATE_PATH, request, BaseTemplate, redirect,
 
 from flags.conf import settings
 from flags.adapters.zk_adapter import ZKAdapter
-# from flags.errors import KeyExistsError, KeyDoesNotExistError
+from flags.errors import KeyExistsError, KeyDoesNotExistError
 
 
 def register_ui_views(app):
@@ -86,8 +86,12 @@ def register_ui_views(app):
                     adapter.update_feature(application, feature, feature_dict)
 
         default = "Enabled" if settings.DEFAULT_VALUE else "Disabled"
-        with adapter_type() as adapter:
-            features = adapter.get_all_features(application)
+        try:
+            with adapter_type() as adapter:
+                features = adapter.get_all_features(application)
+        except KeyDoesNotExistError:
+            abort(404, "Application %s does not exist." % application)
+
 
         #  any local variables can be used in the template
         return locals()
@@ -121,8 +125,11 @@ def register_ui_views(app):
                 # TODO: format errors in a nice UI
                 abort(400, "Please provide a name for the new segment.")
 
-        with adapter_type() as adapter:
-            segments = adapter.get_all_segments(application)
+        try:
+            with adapter_type() as adapter:
+                features = adapter.get_all_segments(application)
+        except KeyDoesNotExistError:
+            abort(404, "Application %s does not exist." % application)
 
         #  any local variables can be used in the template
         return locals()

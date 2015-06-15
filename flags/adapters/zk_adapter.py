@@ -52,7 +52,7 @@ class ZKAdapter(BaseStoreAdapter):
         try:
             keys = self.zk.get_children(self.get_key(*path))
         except NoNodeError:
-            return []
+            raise KeyDoesNotExistError
         return keys
 
     def get_all_features(self, application):
