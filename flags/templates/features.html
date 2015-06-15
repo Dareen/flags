@@ -49,7 +49,7 @@
                         %if options:
                             %for option in options:
                                 <div class="options-block">
-                                    <input id="{{feature}}_{{segment}}_{{option}}_checkbox" type="checkbox" {{"checked" if options[option] else ""}} />
+                                    <input name="{{feature}}_{{segment}}_{{option}}_checkbox" type="checkbox" {{"checked" if options[option] else ""}} />
                                     <label for="{{feature}}_{{segment}}_{{option}}_checkbox" >{{option}}</label>
                                 </div>
                             %end
