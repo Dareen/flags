@@ -15,6 +15,7 @@ logger = logging.getLogger(__name__)
 class ZKAdapter(BaseStoreAdapter):
 
     # TODO: move the logic to the logical layer
+    # TODO: handle connection errors
 
     @property
     def key_separator(self):
