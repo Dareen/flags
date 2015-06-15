@@ -36,7 +36,7 @@ RUN         set -e && \
                 libjpeg62-dev \
                 zlibc \
                 libfreetype6-dev \
-                python-setuptools \
+                python-setuptools
 
 # Set User and Group
 RUN         useradd -m -d /home/$USER -p $USER -s /bin/bash $USER && \
