@@ -99,13 +99,12 @@ class APIView(BottleView):
         def parse_segmentation(segmentation):
 
             # TODO: this can be refactored to be dynamic
-            # TODO: segmentation should be case-insensitive
 
             # this flag is segmented
             # if any of the matching segments is different than the default
             # value, we return this segment flag
             for key in request.GET.keys():
-                segment = segmentation.get(key, None)
+                segment = segmentation.get(key.title(), None)
 
                 if segment:
                     if segment["enabled"] != settings.DEFAULT_VALUE:
@@ -116,7 +115,7 @@ class APIView(BottleView):
                         # value
                         segment_options = segment["options"]
                         segmented_value = segment_options.get(
-                            request.GET[key],
+                            request.GET[key].title(),
                             settings.DEFAULT_VALUE
                         )
                         # if it's disabled, return immediately, no need to
