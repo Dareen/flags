@@ -15,6 +15,7 @@ ENV         USER_LOGGING_DIR        /var/log/$USER
 ADD         requirements.txt /tmp/
 
 # Install System Packages
+# TODO: filter those packages to only what's needed
 RUN         set -e && \
             add-apt-repository ppa:chris-lea/nginx-devel && \
             apt-get update -y && \
