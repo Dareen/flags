@@ -13,12 +13,12 @@ class BaseStoreAdapter(object):
 
     @abstractproperty
     def key_separator(self):
-        return ":"
+        pass
 
-    def get_key(self, application, key=None):
+    def get_key(self, *suffixes):
         return self.key_separator.join(
-            map(str, filter(None, [settings.PREFIX, settings.VERSION,
-                                   application, key]))
+            map(str, filter(None,
+                [settings.PREFIX, settings.VERSION] + list(suffixes)))
         )
 
     @abstractmethod
@@ -41,21 +41,45 @@ class BaseStoreAdapter(object):
         return self
 
     @abstractmethod
+    def get_applications(self):
+        pass
+
+    @abstractmethod
     def get_all_keys(self, application):
         pass
 
     @abstractmethod
-    def create(self, application, key, value):
+    def get_all_features(self, application):
         pass
 
     @abstractmethod
-    def read(self, application, key):
+    def get_all_segments(self, application):
         pass
 
     @abstractmethod
-    def update(self, application, key, value):
+    def create_application(self, application):
         pass
 
     @abstractmethod
-    def delete(self, application, key):
+    def create_segment(self, application, segment):
+        pass
+
+    @abstractmethod
+    def create_segment_option(self, application, segment, option):
+        pass
+
+    @abstractmethod
+    def create_feature(self, application, key, value):
+        pass
+
+    @abstractmethod
+    def read_feature(self, application, key):
+        pass
+
+    @abstractmethod
+    def update_feature(self, application, key, value):
+        pass
+
+    @abstractmethod
+    def delete_feature(self, application, key):
         pass

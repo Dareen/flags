@@ -1,0 +1,64 @@
+%rebase('layout', title='Flags', parent_url=app.get_url('applications'))
+
+<div id="container">
+    <h1 id="page-title">{{application}}</h1>
+
+    <ul id="header-nav">
+        <li><a href="{{app.get_url('features', application=application)}}">Features</a></li>
+        <li class="selected"><a href="{{app.get_url('segments', application=application)}}">Segments</a></li>
+    </ul>
+
+    %for segment in segments:
+        <ul id="segment-list">
+
+            <li id="segment-list-header" title="{{segments[segment]}}">{{segment}}<span class="delete">x</span></li>
+
+            %options = segments[segment]
+            %for option in options:
+                <li>{{option}}<span class="delete">x</span></li>
+            %end
+
+            <li class="add" id="add-segment">
+
+            <span class="add-text">+ Add a new {{segment}}</span>
+            <span class="add-form">
+                <form method="POST" action="{{app.get_url('options', application=application, segment=segment)}}">
+                    <input type="text" name="new_option" class="add-form-input" />
+                    <input type="submit" />
+                </form>
+            </span>
+            </li>
+        </ul>
+    %end
+
+    <script type="text/javascript">
+    $('.add-text').click(function(e) {
+        $(this).next().show();
+        $(this).next().find(".add-form-input").focus();
+        $(this).hide();
+    });
+    </script>
+
+
+    <ul id="add-misc">
+    <li class="add" id="add-segment">
+            <span class="add-text">+ Add a new segment</span>
+            <span class="add-form">
+                <form method="POST">
+                    <input type="text" name="new_segment" class="add-form-input" />
+                    <input type="submit" />
+                </form>
+            </span>
+        </li>
+    </ul>
+
+</div>
+<script type="text/javascript">
+$('.add-text').click(function(e) {
+    $(this).next().show();
+    $(this).next().find(".add-form-input").focus();
+    $(this).hide();
+});
+</script>
+
+
