@@ -6,9 +6,7 @@ from kazoo.exceptions import NodeExistsError, NoNodeError
 
 from flags.conf import settings
 from flags.adapters import BaseStoreAdapter
-from flags.errors import (KeyExistsError, KeyDoesNotExistError,
-                          ApplicationExistsError, SegmentExistsError,
-                          OptionExistsError)
+from flags.errors import KeyExistsError, KeyDoesNotExistError
 
 
 logger = logging.getLogger(__name__)
@@ -132,7 +130,7 @@ class ZKAdapter(BaseStoreAdapter):
                 self.get_key(application, settings.SEGMENTS_KEY)
             )
         except NodeExistsError:
-            raise ApplicationExistsError
+            raise KeyExistsError
 
     def create_segment(self, application, segment):
         # Ensure a path, create if necessary
@@ -145,7 +143,7 @@ class ZKAdapter(BaseStoreAdapter):
             # Update the segmentation of the existing features
             self._update_new_segment(application, segment)
         except NodeExistsError:
-            raise SegmentExistsError
+            raise KeyExistsError
 
     def _update_new_segment(self, application, segment):
         segment = segment.title()
@@ -195,7 +193,7 @@ class ZKAdapter(BaseStoreAdapter):
             self.zk.create(node_path)
             self._update_new_segment_option(application, segment, option)
         except NodeExistsError:
-            raise OptionExistsError
+            raise KeyExistsError
 
     def read_feature(self, application, key):
         return self.read(application, settings.FEATURES_KEY, key)

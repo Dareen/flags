@@ -19,6 +19,8 @@ def register_ui_views(app):
     # TODO: API and UI must use the same adapter
     adapter_type = ZKAdapter
 
+    # TODO: format errors in a nice UI instead of abort
+
     #  Routes to static content
     @app.route('/<path:re:favicon.ico>')
     @app.route('/static/<path:path>', name='static')
@@ -30,13 +32,15 @@ def register_ui_views(app):
     @view('applications')  # Name of template
     def index():
         if request.method == "POST":
-            # TODO: exception handling for ApplicationExistsError
             application_name = request.forms.new_application
             if application_name:
-                with adapter_type() as adapter:
-                    adapter.create_application(application_name)
+                try:
+                    with adapter_type() as adapter:
+                        adapter.create_application(application_name)
+                except KeyExistsError:
+                    abort(409, "Application %s already exists." %
+                          application_name)
             else:
-                # TODO: format errors in a nice UI
                 abort(400, "Please provide a name for the new application.")
 
         default = "Enabled" if settings.DEFAULT_VALUE else "Disabled"
@@ -92,7 +96,6 @@ def register_ui_views(app):
         except KeyDoesNotExistError:
             abort(404, "Application %s does not exist." % application)
 
-
         #  any local variables can be used in the template
         return locals()
 
@@ -101,11 +104,14 @@ def register_ui_views(app):
     def create_feature(application):
         feature_name = request.forms.new_feature
         if feature_name:
-            # TODO: exception handling
-            with adapter_type() as adapter:
-                adapter.create_feature(application, feature_name)
+            try:
+                with adapter_type() as adapter:
+                    adapter.create_feature(application, feature_name)
+            except KeyExistsError:
+                abort(409, "Feature %s already exists for application %s." %
+                      (feature_name, application))
+
         else:
-            # TODO: format errors in a nice UI
             abort(400, "Please provide a name for the new feature.")
 
         redirect(app.get_url('features', application=application))
@@ -118,16 +124,18 @@ def register_ui_views(app):
         if request.method == "POST":
             segment_name = request.forms.new_segment
             if segment_name:
-                # TODO: exception handling
-                with adapter_type() as adapter:
-                    adapter.create_segment(application, segment_name)
+                try:
+                    with adapter_type() as adapter:
+                        adapter.create_segment(application, segment_name)
+                except KeyExistsError:
+                    abort(409, "Segment %s already exists for application %s."
+                          % (segment_name, application))
             else:
-                # TODO: format errors in a nice UI
                 abort(400, "Please provide a name for the new segment.")
 
         try:
             with adapter_type() as adapter:
-                features = adapter.get_all_segments(application)
+                segments = adapter.get_all_segments(application)
         except KeyDoesNotExistError:
             abort(404, "Application %s does not exist." % application)
 
@@ -138,12 +146,15 @@ def register_ui_views(app):
     def options(application, segment):
         option_name = request.forms.new_option
         if option_name:
-            # TODO: exception handling
-            with adapter_type() as adapter:
-                adapter.create_segment_option(application, segment,
-                                              option_name)
+            try:
+                with adapter_type() as adapter:
+                    adapter.create_segment_option(application, segment,
+                                                  option_name)
+            except KeyExistsError:
+                    abort(409, "Option %s already exists for segment %s in "
+                          "application %s." % (option_name, segment,
+                                               application))
         else:
-            # TODO: format errors in a nice UI
             abort(400, "Please provide a name for the new segment option.")
 
         redirect(app.get_url('segments', application=application))
