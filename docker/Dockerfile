@@ -15,6 +15,7 @@ ENV         USER_LOGGING_DIR        /var/log/$USER
 ADD         requirements.txt /tmp/
 
 # Install System Packages
+# TODO: filter those packages to only what's needed
 RUN         set -e && \
             add-apt-repository ppa:chris-lea/nginx-devel && \
             apt-get update -y && \
@@ -36,7 +37,7 @@ RUN         set -e && \
                 libjpeg62-dev \
                 zlibc \
                 libfreetype6-dev \
-                python-setuptools \
+                python-setuptools
 
 # Set User and Group
 RUN         useradd -m -d /home/$USER -p $USER -s /bin/bash $USER && \
