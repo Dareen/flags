@@ -6,6 +6,7 @@ pythonpath = {{ REPO_DIR }}
 module = server
 callable = app
 logger = rsyslog:{{ SYSLOG_HOST | default("syslog-aws.dubizzlecloud.internal") }}:{{ SYSLOG_PORT | default("1122") }},{{ APP_NAME }}_uwsgi
+logto = /var/log/dubizzle/{{ APP_NAME }}_uwsgi.log
 processes = 4
 threads = 2
 stats = :1717

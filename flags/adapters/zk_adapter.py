@@ -15,6 +15,7 @@ logger = logging.getLogger(__name__)
 class ZKAdapter(BaseStoreAdapter):
 
     # TODO: move the logic to the logical layer
+    # TODO: handle connection errors
 
     @property
     def key_separator(self):
@@ -117,6 +118,9 @@ class ZKAdapter(BaseStoreAdapter):
         }
 
     def create_application(self, application):
+        # ensure that /flags/v1 path exists
+        root_path = self.get_key()
+        self.zk.ensure_path(root_path)
 
         node_path = self.get_key(application)
         try:

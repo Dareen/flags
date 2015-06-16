@@ -22,9 +22,14 @@ class APIView(BottleView):
 
     def index(self, application):
         response.headers["Content-Type"] = "application/json"
-        with self.adapter_type() as adapter:
-            application_features = adapter.get_all_keys(application,
-                                                        settings.FEATURES_KEY)
+        try:
+            with self.adapter_type() as adapter:
+                application_features = adapter.get_all_keys(
+                    application, settings.FEATURES_KEY
+                )
+        except KeyDoesNotExistError:
+            msg = ("Application %s does not exists!" % application)
+            return HTTPResponse(status=NOT_FOUND, body=msg)
         user_features = dict()
         for feature in application_features:
             user_features[feature] = self._parse_key(application, feature)
@@ -46,8 +51,8 @@ class APIView(BottleView):
                     adapter.create_feature(application, key, value)
                 return HTTPResponse(status=CREATED)
             except KeyExistsError:
-                msg = ("Key already exists! You might want to use PUT instead"
-                       " of POST.")
+                msg = ("Feature already exists! You might want to use PUT "
+                       "instead of POST.")
                 return HTTPResponse(status=CONFLICT, body=msg)
         else:
             return HTTPResponse(status=UNAUTHORIZED)
@@ -78,7 +83,7 @@ class APIView(BottleView):
                     adapter.delete_feature(application, key)
                 return HTTPResponse(status=NO_CONTENT)
             except KeyDoesNotExistError:
-                return HTTPResponse(body="Key does not exist!",
+                return HTTPResponse(body="Feature does not exist!",
                                     status=NOT_FOUND)
         else:
             return HTTPResponse(status=UNAUTHORIZED)
@@ -93,7 +98,7 @@ class APIView(BottleView):
                 with self.adapter_type() as adapter:
                     return adapter.read_feature(application, key)
             except KeyDoesNotExistError:
-                raise HTTPResponse(body="Key does not exist!",
+                raise HTTPResponse(body="Feature does not exist!",
                                    status=NOT_FOUND)
 
         def parse_segmentation(segmentation):

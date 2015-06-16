@@ -1,5 +1,7 @@
 # Flags
 
+Note: This doumentation is outdated and needs to be updated.
+
 RESTful service for administering flags.
 Reads and writes flags to/from a key-value store (currently Zookeeper) to be used to enable/disable features.
 <br/>Can be used in any domain or application.
