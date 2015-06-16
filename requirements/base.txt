@@ -1,0 +1,8 @@
+envtpl==0.3.2
+redis==2.10.3
+envparse==0.1.5
+bottleCBV
+uWSGI==1.9.20
+kazoo==2.0
+WTForms==2.0.2
+schema==0.3.1

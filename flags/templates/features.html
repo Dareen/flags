@@ -1,0 +1,105 @@
+%rebase('layout', title='Flags', parent_url=app.get_url('applications'))
+
+<div id="container">
+    <h1 id="page-title">{{application}}</h1>
+
+    <ul class="header-links">
+        <li>Features are <b>{{default}}</b> by default, unless stated otherwise.</li>
+    </ul>
+
+    <ul id="header-nav">
+        <li class="selected"><a href="{{app.get_url('features', application=application)}}">Features</a></li>
+        <li><a href="{{app.get_url('segments', application=application)}}">Segments</a></li>
+    </ul>
+
+    <form method="POST">
+
+    %for feature in features:
+
+        <div class="block">
+            <div class="block-header header">
+                <h3 title="{{features[feature]}}">{{feature}}</h3>
+                <span class="switch header-switch">
+
+                    <input type="checkbox" name="{{feature}}_checkbox" id="{{feature}}_checkbox" class="ios-toggle" {{"checked" if features[feature]["enabled"] else ""}}/>
+                    <label for="{{feature}}_checkbox" class="checkbox-label"></label>
+
+                </span>
+            </div>
+
+            %segmentation = features[feature].get("segmentation", None)
+            %if segmentation:
+
+                <div class="segmentation-block">
+                <div class="block-header sub-header">
+                    <h3>Segmentation</h3>
+                </div>
+
+                %for segment in segmentation:
+                    <div class="options-wrapper">
+                        <div class="block-header sub-sub-header">
+                            <h3>{{segment}}</h3>
+                            <span class="switch">
+                                <input type="checkbox" name="{{feature}}_{{segment}}_checkbox" id="{{feature}}_{{segment}}_checkbox" class="ios-toggle" {{"checked" if segmentation[segment]["enabled"] else ""}}/>
+                                <label for="{{feature}}_{{segment}}_checkbox" class="checkbox-label"></label>
+                            </span>
+                        </div>
+
+                        %options = segmentation[segment].get("options", None)
+                        %if options:
+                            %for option in options:
+                                <div class="options-block">
+                                    <input name="{{feature}}_{{segment}}_{{option}}_checkbox" type="checkbox" {{"checked" if options[option] else ""}} />
+                                    <label for="{{feature}}_{{segment}}_{{option}}_checkbox" >{{option}}</label>
+                                </div>
+                            %end
+                        %end
+                    </div>
+                %end
+
+                </div>
+            %end
+
+        </div>
+
+    %end
+
+    <input type="submit" />
+    </form>
+
+    <ul id="add-misc">
+    <li class="add" id="add-feature">
+            <span class="add-text">+ Add a new feature</span>
+            <span class="add-form">
+                <form method="POST" action="{{app.get_url('create', application=application)}}">
+                    <input type="text" name="new_feature" class="add-form-input" />
+                    <input type="submit" />
+                </form>
+            </span>
+        </li>
+    </ul>
+</div>
+<script type="text/javascript">
+$('.ios-toggle').click(function(e) {
+    parent_div = $(this).parent().parent().parent();
+
+    if ($(this).parent().hasClass("header-switch")) {
+        parent_div.find(".segmentation-block").fadeToggle("fast");
+    }
+
+    parent_div.find(".options-block").fadeToggle("fast");
+
+    if ($(this).is(':checked')) {
+    } else {
+        parent_div.find("input:checkbox").each(function() {
+            this.checked = false;
+        });
+    }
+});
+$('.add-text').click(function(e) {
+    $(this).next().show();
+    $(this).next().find(".add-form-input").focus();
+    $(this).hide();
+});
+</script>
+
