@@ -98,7 +98,7 @@ class ZKAdapter(BaseStoreAdapter):
         ))
         segmentation = {
             segment: {
-                "enabled": settings.DEFAULT_VALUE,
+                "toggled": settings.DEFAULT_VALUE,
                 "options": {
                     option: settings.DEFAULT_VALUE
                     for option in self.zk.get_children(
@@ -114,7 +114,7 @@ class ZKAdapter(BaseStoreAdapter):
         }
         return {
             "segmentation": segmentation,
-            "enabled": settings.DEFAULT_VALUE
+            "feature_toggled": settings.DEFAULT_VALUE
         }
 
     def create_application(self, application):
@@ -155,7 +155,7 @@ class ZKAdapter(BaseStoreAdapter):
         for feature in features:
             feature_dict = self.read_feature(application, feature)
             feature_dict["segmentation"][segment] = {
-                "enabled": settings.DEFAULT_VALUE,
+                "toggled": settings.DEFAULT_VALUE,
                 "options": dict()
             }
             self.update_feature(application, feature, feature_dict)

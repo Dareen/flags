@@ -68,12 +68,12 @@ def register_ui_views(app):
                 for feature in features:
                     # a checkbox is checked if it exists in request.forms
                     feature_dict = {
-                        "enabled": True if request.forms.get(
+                        "feature_toggled": True if request.forms.get(
                             feature_chck_name_tmpl % feature
                         ) else False,
                         "segmentation": {
                             segment: {
-                                "enabled": True if request.forms.get(
+                                "toggled": True if request.forms.get(
                                     segment_chck_name_tmpl % (feature, segment)
                                 ) else False,
                                 "options": {

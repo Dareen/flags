@@ -21,7 +21,7 @@
                 <h3 title="{{features[feature]}}">{{feature}}</h3>
                 <span class="switch header-switch">
 
-                    <input type="checkbox" name="{{feature}}_checkbox" id="{{feature}}_checkbox" class="ios-toggle" {{"checked" if features[feature]["enabled"] else ""}}/>
+                    <input type="checkbox" name="{{feature}}_checkbox" id="{{feature}}_checkbox" class="ios-toggle" {{"checked" if features[feature]["feature_toggled"] else ""}}/>
                     <label for="{{feature}}_checkbox" class="checkbox-label"></label>
 
                 </span>
@@ -40,7 +40,7 @@
                         <div class="block-header sub-sub-header">
                             <h3>{{segment}}</h3>
                             <span class="switch">
-                                <input type="checkbox" name="{{feature}}_{{segment}}_checkbox" id="{{feature}}_{{segment}}_checkbox" class="ios-toggle" {{"checked" if segmentation[segment]["enabled"] else ""}}/>
+                                <input type="checkbox" name="{{feature}}_{{segment}}_checkbox" id="{{feature}}_{{segment}}_checkbox" class="ios-toggle" {{"checked" if segmentation[segment]["toggled"] else ""}}/>
                                 <label for="{{feature}}_{{segment}}_checkbox" class="checkbox-label"></label>
                             </span>
                         </div>
