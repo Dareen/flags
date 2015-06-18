@@ -12,7 +12,8 @@ logger = logging.getLogger(__name__)
 app = Bottle()
 
 APIView.register(app)
-register_ui_views(app)
+if settings.ADMIN_MODE:
+    register_ui_views(app)
 
 
 @app.route("/check")
