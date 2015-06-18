@@ -54,7 +54,7 @@ def register_ui_views(app):
                method=["GET", "POST"])
     @view('features')  # Name of template
     def features(application):
-        application = application.title()
+        application = application.lower()
 
         if request.method == "POST":
             feature_chck_name_tmpl = "%s_checkbox"
@@ -120,7 +120,7 @@ def register_ui_views(app):
                method=["GET", "POST"])
     @view('segments')  # Name of template
     def segments(application):
-        application = application.title()
+        application = application.lower()
         if request.method == "POST":
             segment_name = request.forms.new_segment
             if segment_name:

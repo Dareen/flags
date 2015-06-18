@@ -189,7 +189,7 @@ class APIView(BottleView):
             # if any of the matching segments is different than the default
             # value, we return this segment flag
             for feature in request.GET.keys():
-                segment = segmentation.get(feature.title(), None)
+                segment = segmentation.get(feature.lower(), None)
 
                 if segment:
                     if segment["toggled"] != settings.DEFAULT_VALUE:
@@ -200,7 +200,7 @@ class APIView(BottleView):
                         # value
                         segment_options = segment["options"]
                         segmented_value = segment_options.get(
-                            request.GET[feature].title(),
+                            request.GET[feature].lower(),
                             settings.DEFAULT_VALUE
                         )
                         # if it's disabled, return immediately, no need to
