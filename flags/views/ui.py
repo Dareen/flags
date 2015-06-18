@@ -54,7 +54,7 @@ def register_ui_views(app):
                method=["GET", "POST"])
     @view('features')  # Name of template
     def features(application):
-        application = application.title()
+        application = application.lower()
 
         if request.method == "POST":
             feature_chck_name_tmpl = "%s_checkbox"
@@ -68,12 +68,12 @@ def register_ui_views(app):
                 for feature in features:
                     # a checkbox is checked if it exists in request.forms
                     feature_dict = {
-                        "enabled": True if request.forms.get(
+                        "feature_toggled": True if request.forms.get(
                             feature_chck_name_tmpl % feature
                         ) else False,
                         "segmentation": {
                             segment: {
-                                "enabled": True if request.forms.get(
+                                "toggled": True if request.forms.get(
                                     segment_chck_name_tmpl % (feature, segment)
                                 ) else False,
                                 "options": {
@@ -120,7 +120,7 @@ def register_ui_views(app):
                method=["GET", "POST"])
     @view('segments')  # Name of template
     def segments(application):
-        application = application.title()
+        application = application.lower()
         if request.method == "POST":
             segment_name = request.forms.new_segment
             if segment_name:

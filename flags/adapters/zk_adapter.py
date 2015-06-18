@@ -24,7 +24,7 @@ class ZKAdapter(BaseStoreAdapter):
     def get_key(self, *suffixes):
         # *suffixes: anything to be added after the prefix and version
         # e.g. application name, key, segments ... etc.
-        def title(s): return s.title()
+        def title(s): return s.lower()
         suffixes = map(title, suffixes)
         path = super(ZKAdapter, self).get_key(*suffixes)
         # append a preceeding slash in the beginning, ZK specific format
@@ -98,7 +98,7 @@ class ZKAdapter(BaseStoreAdapter):
         ))
         segmentation = {
             segment: {
-                "enabled": settings.DEFAULT_VALUE,
+                "toggled": settings.DEFAULT_VALUE,
                 "options": {
                     option: settings.DEFAULT_VALUE
                     for option in self.zk.get_children(
@@ -114,7 +114,7 @@ class ZKAdapter(BaseStoreAdapter):
         }
         return {
             "segmentation": segmentation,
-            "enabled": settings.DEFAULT_VALUE
+            "feature_toggled": settings.DEFAULT_VALUE
         }
 
     def create_application(self, application):
@@ -150,19 +150,19 @@ class ZKAdapter(BaseStoreAdapter):
             raise KeyExistsError
 
     def _update_new_segment(self, application, segment):
-        segment = segment.title()
+        segment = segment.lower()
         features = self.get_all_keys(application, settings.FEATURES_KEY)
         for feature in features:
             feature_dict = self.read_feature(application, feature)
             feature_dict["segmentation"][segment] = {
-                "enabled": settings.DEFAULT_VALUE,
+                "toggled": settings.DEFAULT_VALUE,
                 "options": dict()
             }
             self.update_feature(application, feature, feature_dict)
 
     def _update_new_segment_option(self, application, segment, option):
-        segment = segment.title()
-        option = option.title()
+        segment = segment.lower()
+        option = option.lower()
         features = self.get_all_keys(application, settings.FEATURES_KEY)
         for feature in features:
             feature_dict = self.read_feature(application, feature)
@@ -170,8 +170,8 @@ class ZKAdapter(BaseStoreAdapter):
             self.update_feature(application, feature, feature_dict)
 
     def _update_deleted_segment_option(self, application, segment, option):
-        segment = segment.title()
-        option = option.title()
+        segment = segment.lower()
+        option = option.lower()
         features = self.get_all_keys(application, settings.FEATURES_KEY)
         for feature in features:
             feature_dict = self.read_feature(application, feature)
@@ -179,7 +179,7 @@ class ZKAdapter(BaseStoreAdapter):
             self.update_feature(application, feature, feature_dict)
 
     def _update_deleted_segment(self, application, segment):
-        segment = segment.title()
+        segment = segment.lower()
         features = self.get_all_keys(application, settings.FEATURES_KEY)
         for feature in features:
             feature_dict = self.read_feature(application, feature)
