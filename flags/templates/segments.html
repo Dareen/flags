@@ -8,7 +8,6 @@
         <li class="selected"><a href="{{app.get_url('segments', application=application)}}">Segments</a></li>
     </ul>
 
-
     <ul id="add-misc">
         <li class="add" id="add-segment">
             <span class="add-text">+ Add a new segment</span>
@@ -21,7 +20,6 @@
         </li>
     </ul>
 
-
     %for segment in segments:
         <ul id="segment-list">
 
@@ -31,7 +29,9 @@
 
             %options = segments[segment]
             %for option in options:
-                <li>{{option}}<span class="delete">x</span></li>
+                <li>{{option}}<span class="delete">
+                    <form><input type="submit" value="x" /></form>
+                </span></li>
             %end
 
             <li class="add" id="add-segment">
@@ -46,15 +46,6 @@
             </li>
         </ul>
     %end
-
-    <script type="text/javascript">
-    $('.add-text').click(function(e) {
-        $(this).next().show();
-        $(this).next().find(".add-form-input").focus();
-        $(this).hide();
-    });
-    </script>
-
 </div>
 <script type="text/javascript">
 $('.add-text').click(function(e) {
@@ -72,5 +63,3 @@ $('.delete').click(function(e) {
     }
 });
 </script>
-
-
