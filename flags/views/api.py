@@ -23,7 +23,7 @@ class APIView(BottleView):
         self.adapter_type = ZKAdapter
 
     # TODO: use regex for mode
-    def index(self, application, mode=settings.RESPONSE_MODE_BASIC):
+    def index(self, application, mode):
         response.headers["Content-Type"] = "application/json"
         try:
             with self.adapter_type() as adapter:
@@ -89,8 +89,8 @@ class APIView(BottleView):
             # }
             feature_dicts = dict()
             for feature in application_features:
-                feature_dicts[feature] = self.read_feature(application,
-                                                           feature)
+                feature_dicts[feature] = self._read_feature(application,
+                                                            feature)
                 feature_dicts[feature]["user_enabled"] = self._parse_feature(
                                                              application,
                                                              feature)
@@ -105,7 +105,7 @@ class APIView(BottleView):
         if mode == settings.RESPONSE_MODE_BASIC:
             return {feature: self._parse_feature(application, feature)}
         elif mode == settings.RESPONSE_MODE_ADVANCED:
-            feature_dict = self.read_feature(application, feature)
+            feature_dict = self._read_feature(application, feature)
             feature_dict["user_enabled"] = self._parse_feature(application,
                                                                feature)
             return feature_dict
@@ -115,7 +115,7 @@ class APIView(BottleView):
                     settings.RESPONSE_MODE_ADVANCED))
             return HTTPResponse(status=BAD_REQUEST, body=msg)
 
-    def read_feature(self, application, feature):
+    def _read_feature(self, application, feature):
         try:
             with self.adapter_type() as adapter:
                 return adapter.read_feature(application, feature)
@@ -159,7 +159,7 @@ class APIView(BottleView):
             # the user-specific segment is not available in this application
             return settings.DEFAULT_VALUE
 
-        feature_dict = self.read_feature(application, feature)
+        feature_dict = self._read_feature(application, feature)
         # If DEFAULT_VALUE is True, then features are Enabled unless stated
         # otherwise
         # If DEFAULT_VALUE is False, then features are Disabled unless stated
