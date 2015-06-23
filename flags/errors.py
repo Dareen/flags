@@ -4,3 +4,7 @@ class KeyExistsError(Exception):
 
 class KeyDoesNotExistError(Exception):
     pass
+
+
+class ZKConnectionTimeoutError(Exception):
+    pass
