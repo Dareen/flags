@@ -47,19 +47,3 @@
         </ul>
     %end
 </div>
-<script type="text/javascript">
-$('.add-text').click(function(e) {
-    $(this).next().show();
-    $(this).next().find(".add-form-input").focus();
-    $(this).hide();
-});
-
-$('.delete').click(function(e) {
-    if(confirm('Are you sure you want to delete?')) {
-        //Add confirm action here
-    } else {
-        e.preventDefault();
-        return;
-    }
-});
-</script>
