@@ -1,15 +1,12 @@
 import logging
-from httplib import (CREATED, NOT_FOUND, NO_CONTENT, CONFLICT, UNAUTHORIZED,
-                     BAD_REQUEST)
+from httplib import NOT_FOUND, BAD_REQUEST
 
 from bottle import HTTPResponse, response, request
 from bottleCBV import BottleView
-from schema import SchemaError
 
 from flags.conf import settings
-from flags.conf.schemas import flags_schema
 from flags.adapters.zk_adapter import ZKAdapter
-from flags.errors import KeyExistsError, KeyDoesNotExistError
+from flags.errors import KeyDoesNotExistError
 
 
 logger = logging.getLogger(__name__)
@@ -118,62 +115,12 @@ class APIView(BottleView):
                     settings.RESPONSE_MODE_ADVANCED))
             return HTTPResponse(status=BAD_REQUEST, body=msg)
 
-    def post(self, application, feature):
-        if settings.ADMIN_MODE:
-            try:
-                flags_schema.validate(request.json)
-            except SchemaError as e:
-                return HTTPResponse(status=BAD_REQUEST, body=e)
-
-            value = request.json
-            try:
-                with self.adapter_type() as adapter:
-                    adapter.create_feature(application, feature, value)
-                return HTTPResponse(status=CREATED)
-            except KeyExistsError:
-                msg = ("Feature already exists! You might want to use PUT "
-                       "instead of POST.")
-                return HTTPResponse(status=CONFLICT, body=msg)
-        else:
-            return HTTPResponse(status=UNAUTHORIZED)
-
-    def put(self, application, feature):
-        if settings.ADMIN_MODE:
-            try:
-                flags_schema.validate(request.json)
-            except SchemaError as e:
-                return HTTPResponse(status=BAD_REQUEST, body=e)
-
-            value = request.json
-            try:
-                with self.adapter_type() as adapter:
-                    adapter.update_feature(application, feature, value)
-                return HTTPResponse(status=NO_CONTENT)
-            except KeyDoesNotExistError:
-                msg = ("Feature does not exists! You might want to use POST "
-                       "instead of PUT.")
-                return HTTPResponse(status=NOT_FOUND, body=msg)
-        else:
-            return HTTPResponse(status=UNAUTHORIZED)
-
-    def delete(self, application, feature):
-        if settings.ADMIN_MODE:
-            try:
-                with self.adapter_type() as adapter:
-                    adapter.delete_feature(application, feature)
-                return HTTPResponse(status=NO_CONTENT)
-            except KeyDoesNotExistError:
-                return HTTPResponse(body="Feature does not exist!",
-                                    status=NOT_FOUND)
-        else:
-            return HTTPResponse(status=UNAUTHORIZED)
-
     def read_feature(self, application, feature):
         try:
             with self.adapter_type() as adapter:
                 return adapter.read_feature(application, feature)
         except KeyDoesNotExistError:
-            raise HTTPResponse(body="Feature does not exist!",
+            raise HTTPResponse(body="Feature %s does not exist!" % feature,
                                status=NOT_FOUND)
 
     def _parse_feature(self, application, feature):
