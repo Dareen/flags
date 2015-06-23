@@ -1,17 +1,33 @@
 %rebase('layout', title='Flags', parent_url=app.get_url('applications'))
 
 <div id="container">
-    <h1 id="page-title">{{application}}</h1>
+    <h1 id="page-title"><span class="home-link"><img src="{{ app.get_url('static', path='images/home-icon.png') }}" /></span>{{application}}</h1>
 
     <ul id="header-nav">
         <li><a href="{{app.get_url('features', application=application)}}">Features</a></li>
         <li class="selected"><a href="{{app.get_url('segments', application=application)}}">Segments</a></li>
     </ul>
 
+
+    <ul id="add-misc">
+        <li class="add" id="add-segment">
+            <span class="add-text">+ Add a new segment</span>
+            <span class="add-form">
+                <form method="POST">
+                    <input type="text" name="new_segment" class="add-form-input" />
+                    <input type="submit" />
+                </form>
+            </span>
+        </li>
+    </ul>
+
+
     %for segment in segments:
         <ul id="segment-list">
 
-            <li id="segment-list-header" title="{{segments[segment]}}">{{segment}}<span class="delete">x</span></li>
+            <li id="segment-list-header" title="{{segments[segment]}}">{{segment}}<span class="delete">
+                <form><input type="submit" value="x" /></form>
+            </span></li>
 
             %options = segments[segment]
             %for option in options:
@@ -39,25 +55,21 @@
     });
     </script>
 
-
-    <ul id="add-misc">
-    <li class="add" id="add-segment">
-            <span class="add-text">+ Add a new segment</span>
-            <span class="add-form">
-                <form method="POST">
-                    <input type="text" name="new_segment" class="add-form-input" />
-                    <input type="submit" />
-                </form>
-            </span>
-        </li>
-    </ul>
-
 </div>
 <script type="text/javascript">
 $('.add-text').click(function(e) {
     $(this).next().show();
     $(this).next().find(".add-form-input").focus();
     $(this).hide();
+});
+
+$('.delete').click(function(e) {
+    if(confirm('Are you sure you want to delete?')) {
+        //Add confirm action here
+    } else {
+        e.preventDefault();
+        return;
+    }
 });
 </script>
 

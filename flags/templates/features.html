@@ -1,7 +1,7 @@
 %rebase('layout', title='Flags', parent_url=app.get_url('applications'))
 
 <div id="container">
-    <h1 id="page-title">{{application}}</h1>
+    <h1 id="page-title"><span class="home-link"><img src="{{ app.get_url('static', path='images/home-icon.png') }}" /></span>{{application}}</h1>
 
     <ul class="header-links">
         <li>Features are <b>{{default}}</b> by default, unless stated otherwise.</li>
@@ -13,8 +13,19 @@
         <li><a href="{{app.get_url('segments', application=application)}}">Segments</a></li>
     </ul>
 
-    <form method="POST">
+    <ul id="add-misc">
+        <li class="add" id="add-feature">
+                <span class="add-text">+ Add a new feature</span>
+                <span class="add-form">
+                    <form method="POST" action="{{app.get_url('create', application=application)}}">
+                        <input type="text" name="new_feature" class="add-form-input" />
+                        <input type="submit" />
+                    </form>
+                </span>
+            </li>
+    </ul>
 
+<form method="POST">
     %for feature in features:
 
         <div class="block">
@@ -68,19 +79,16 @@
     <input type="submit" />
     </form>
 
-    <ul id="add-misc">
-    <li class="add" id="add-feature">
-            <span class="add-text">+ Add a new feature</span>
-            <span class="add-form">
-                <form method="POST" action="{{app.get_url('create', application=application)}}">
-                    <input type="text" name="new_feature" class="add-form-input" />
-                    <input type="submit" />
-                </form>
-            </span>
-        </li>
-    </ul>
 </div>
 <script type="text/javascript">
+$(function() {
+    $(".block-header .ios-toggle").each(function( index ) {
+        if (!$(this).is(':checked')) {
+            $(this).parent().parent().parent().find(".options-block").hide();
+        }
+    });
+});
+
 $('.ios-toggle').click(function(e) {
     parent_div = $(this).parent().parent().parent();
 
