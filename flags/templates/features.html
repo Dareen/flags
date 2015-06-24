@@ -13,16 +13,17 @@
         <li><a href="{{app.get_url('segments', application=application)}}">Segments</a></li>
     </ul>
 
+
+
     <ul id="add-misc">
         <li class="add" id="add-feature">
-                <span class="add-text">+ Add a new feature</span>
-                <span class="add-form">
-                    <form method="POST" action="{{app.get_url('create', application=application)}}">
-                        <input type="text" name="new_feature" class="add-form-input" />
-                        <input type="submit" />
-                    </form>
-                </span>
-            </li>
+            <span class="add-form">
+                <form method="POST" action="{{app.get_url('create', application=application)}}">
+                    <input type="text" name="new_feature" class="add-form-input" placeholder="Add a new feature" />
+                    <input type="submit" class="submit" />
+                </form>
+            </span>
+        </li>
     </ul>
 
 <form method="POST">
@@ -76,7 +77,7 @@
 
     %end
 
-    <input type="submit" />
+    <input type="submit" class="submit full-width-button" />
     </form>
 
 </div>

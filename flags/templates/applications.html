@@ -1,7 +1,7 @@
 %rebase('layout', title='Applications')
 
 <div id="container">
-    <h1 id="page-title">Flags Serive - Control Center</h1>
+    <h1 id="page-title">Flags Service - Control Center</h1>
 
     <ul class="header-links">
         <li>Code and Docs on <a href="https://github.com/dubizzle/flags">github</a></li>
@@ -13,14 +13,14 @@
            <li><a href="{{app.get_url('features', application=application)}}">{{application}}</a></li>
         %end
 
-        <li class="add">
-            <span class="add-text">+ Add a new application</span>
+        <li class="add" id="add-new-application">
             <span class="add-form">
                 <form method="POST">
-                    <input type="text" name="new_application" class="add-form-input" />
-                    <input type="submit" />
+                    <input type="text" name="new_application" class="add-form-input" placeholder="Add a new application" />
+                    <input type="submit" class="submit" />
                 </form>
             </span>
         </li>
+
     </ul>
 </div>

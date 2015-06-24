@@ -1,9 +1,6 @@
 $(function() {
-    //SHOWING AN INPUT FIELD DYNAMICALLY
-    $('.add-text').click(function(e) {
-        $(this).next().show();
-        $(this).next().find(".add-form-input").focus();
-        $(this).hide();
+    $(".add-option").focus(function() {
+        $(this).next().fadeIn();
     });
 
     //DELETE CONFIRMATION
@@ -20,6 +17,7 @@ $(function() {
     $(".block-header .ios-toggle").each(function( index ) {
         if (!$(this).is(':checked')) {
             $(this).parent().parent().parent().find(".options-block").hide();
+            $(this).parent().parent().parent().find(".segmentation-block").hide();
         }
     });
 

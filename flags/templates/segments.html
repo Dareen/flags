@@ -10,11 +10,10 @@
 
     <ul id="add-misc">
         <li class="add" id="add-segment">
-            <span class="add-text">+ Add a new segment</span>
             <span class="add-form">
                 <form method="POST">
-                    <input type="text" name="new_segment" class="add-form-input" />
-                    <input type="submit" />
+                    <input type="text" name="new_segment" class="add-form-input" placeholder="Add a new segment" />
+                    <input type="submit" class="submit" />
                 </form>
             </span>
         </li>
@@ -24,23 +23,21 @@
         <ul id="segment-list">
 
             <li id="segment-list-header" title="{{segments[segment]}}">{{segment}}<span class="delete">
-                <form><input type="submit" value="x" /></form>
+                <form><input type="submit" value="" /></form>
             </span></li>
 
             %options = segments[segment]
             %for option in options:
                 <li>{{option}}<span class="delete">
-                    <form><input type="submit" value="x" /></form>
+                    <form><input type="submit" value="" /></form>
                 </span></li>
             %end
 
             <li class="add" id="add-segment">
-
-            <span class="add-text">+ Add a new {{segment}}</span>
             <span class="add-form">
                 <form method="POST" action="{{app.get_url('options', application=application, segment=segment)}}">
-                    <input type="text" name="new_option" class="add-form-input" />
-                    <input type="submit" />
+                    <input type="text" name="new_option" class="add-form-input add-option" placeholder="+ Add an option" />
+                    <input type="submit" class="submit" style="display:none" value="Submit" />
                 </form>
             </span>
             </li>
