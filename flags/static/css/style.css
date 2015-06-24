@@ -12,7 +12,7 @@ ul{margin:0; padding:0;}
 
 /* == HEADER NAVIGATION
 =================================*/
-#header-nav {margin-bottom: 120px}
+#header-nav {margin-bottom: 90px}
 #header-nav li {margin:0; padding:10px 0; list-style-type: none; border:1px solid #D9E5EE; text-align: center; float: left; width: 49%; background-color: #E8F4FD }
 #header-nav .selected {background-color: white; font-weight: bold}
 #header-nav a {text-decoration: none; color: #333}
@@ -66,5 +66,7 @@ ul{margin:0; padding:0;}
 #add-new-application .submit {width: 20%; margin: 4px 2% 0 0;}
 
 .full-width-button {width: 100%}
+.error {background-color: #FFCCCE; font-weight: bold; padding: 10px 6px; margin-bottom: 20px}
+.success {background-color: #4CD864; font-weight: bold; padding: 10px 6px; margin-bottom: 20px}
 
 #add-option {height:24px;}

@@ -3,6 +3,12 @@ $(function() {
         $(this).next().fadeIn();
     });
 
+    //HIDE CONFIRMATION MESSAGES
+    function hidemsgs(){
+        $(".success").animate({ opacity: 0 })
+    }
+    setTimeout(hidemsgs, 3000);
+
     //DELETE CONFIRMATION
     $('.delete').click(function(e) {
         if(confirm('Are you sure you want to delete?')) {
@@ -26,14 +32,15 @@ $(function() {
         parent_div = $(this).parent().parent().parent();
 
         if ($(this).parent().hasClass("header-switch")) {
-           parent_div.find(".segmentation-block").fadeToggle("fast");
-            if ($(this).is(':checked')) { //on
-            } else { //off
+            if ($(this).is(':checked')) {
+                parent_div.find(".segmentation-block").fadeIn("fast");
+            } else {
                 parent_div.find(".options-block").fadeOut("fast");
+                parent_div.find(".segmentation-block").fadeOut("fast");
             }
+        } else {
+            parent_div.find(".options-block").fadeToggle("fast");
         }
-
-        parent_div.find(".options-block").fadeToggle("fast");
 
         if ($(this).is(':checked')) {
         } else {
