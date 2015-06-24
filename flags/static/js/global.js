@@ -26,7 +26,11 @@ $(function() {
         parent_div = $(this).parent().parent().parent();
 
         if ($(this).parent().hasClass("header-switch")) {
-            parent_div.find(".segmentation-block").fadeToggle("fast");
+           parent_div.find(".segmentation-block").fadeToggle("fast");
+            if ($(this).is(':checked')) { //on
+            } else { //off
+                parent_div.find(".options-block").fadeOut("fast");
+            }
         }
 
         parent_div.find(".options-block").fadeToggle("fast");
