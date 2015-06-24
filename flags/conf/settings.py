@@ -12,12 +12,7 @@ ADMIN_MODE = env("ADMIN_MODE", cast=bool, default=False)
 # If DEFAULT_VALUE is False, then features are Disabled unless state otherwise
 DEFAULT_VALUE = env("DEFAULT_VALUE", cast=bool, default=True)
 
-ZK_HOSTS = env("ZK_HOSTS",
-               default="aws_zk1.dubizzlecloud.internal:2181,"
-                       "aws_zk2.dubizzlecloud.internal:2181,"
-                       "aws_zk3.dubizzlecloud.internal:2181,"
-                       "aws_zk4.dubizzlecloud.internal:2181,"
-                       "aws_zk5.dubizzlecloud.internal:2181")
+ZK_HOSTS = env("ZK_HOSTS", default="localhost:2181")
 # Time in seconds to wait for zookeeper connection to succeed.
 ZK_CONNECTION_TIMEOUT = 5
 
@@ -78,7 +73,7 @@ LOGGING = {
             "facility": "local0",
             "formatter": "syslog",
             "address": [env("SYSLOG_HOST",
-                            default="syslog-aws.dubizzlecloud.internal"),
+                            default="localhost"),
                         env("SYSLOG_PORT", default=1122, cast=int)],
             "filters": ["hostname"],
         },
