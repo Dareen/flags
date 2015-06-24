@@ -1,11 +1,11 @@
 %rebase('layout', title='Flags', parent_url=app.get_url('applications'))
 
 <div id="container">
-    <h1 id="page-title">{{application}}</h1>
+    <h1 id="page-title">{{application_name}}</h1>
 
     <ul id="header-nav">
-        <li><a href="{{app.get_url('features', application=application)}}">Features</a></li>
-        <li class="selected"><a href="{{app.get_url('segments', application=application)}}">Segments</a></li>
+        <li><a href="{{app.get_url('features', application_name=application_name)}}">Features</a></li>
+        <li class="selected"><a href="{{app.get_url('segments', application_name=application_name)}}">Segments</a></li>
     </ul>
 
     %for segment in segments:
@@ -22,7 +22,7 @@
 
             <span class="add-text">+ Add a new {{segment}}</span>
             <span class="add-form">
-                <form method="POST" action="{{app.get_url('options', application=application, segment=segment)}}">
+                <form method="POST" action="{{app.get_url('options', application_name=application_name, segment=segment)}}">
                     <input type="text" name="new_option" class="add-form-input" />
                     <input type="submit" />
                 </form>

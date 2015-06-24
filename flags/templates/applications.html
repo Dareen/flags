@@ -13,7 +13,7 @@
 
     <ul id="home-nav">
         %for application in applications:
-           <li><a href="{{app.get_url('features', application=application)}}">{{application}}</a></li>
+           <li><a href="{{app.get_url('features', application_name=application_name)}}">{{application_name}}</a></li>
         %end
 
         <li class="add">
