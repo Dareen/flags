@@ -51,7 +51,7 @@ ul{margin:0; padding:0;}
 #segment-list {margin:0px 0 30px; padding:0; background-color: white; padding: 6px}
 #segment-list li {margin:0 0 4px 0; list-style-type:none; background-color: #EFF0F0; padding: 10px 0 10px 20px; position: relative;}
 #segment-list .delete {position: absolute; top:0; right: 0; margin:10px 10px 0 0;}
-#segment-list .delete input {border:none; background-color: transparent; background-image: url(../images/delete.png); background-repeat:no-repeat; width: 20px}
+#segment-list .delete input {border:none; background-color: transparent; background-image: url(../images/delete.png); background-repeat:no-repeat; width: 20px; height:22px;}
 #segment-list #segment-list-header {background-color: white; padding-left:4px; font-weight:bold}
 #segment-list #add-segment {background-color: white}
 #segment-list .add {border:none; padding: 4px 10px}
