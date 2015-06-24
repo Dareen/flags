@@ -50,11 +50,11 @@ def register_ui_views(app):
         #  any local variables can be used in the template
         return locals()
 
-    @app.route('/<application>/features', name='features',
+    @app.route('/<application_name>/features', name='features',
                method=["GET", "POST"])
     @view('features')  # Name of template
-    def features(application):
-        application = application.lower()
+    def features(application_name):
+        application_name = application_name.lower()
 
         if request.method == "POST":
             feature_chck_name_tmpl = "%s_checkbox"
@@ -62,8 +62,8 @@ def register_ui_views(app):
             option_chck_name_tmpl = "%s_%s_%s_checkbox"
 
             with adapter_type() as adapter:
-                segments = adapter.get_all_segments(application)
-                features = adapter.get_all_features(application)
+                segments = adapter.get_all_segments(application_name)
+                features = adapter.get_all_features(application_name)
 
                 for feature in features:
                     # a checkbox is checked if it exists in request.forms
@@ -87,74 +87,75 @@ def register_ui_views(app):
                             for segment in segments
                         }
                     }
-                    adapter.update_feature(application, feature, feature_dict)
+                    adapter.update_feature(application_name, feature,
+                                           feature_dict)
 
         default = "Enabled" if settings.DEFAULT_VALUE else "Disabled"
         try:
             with adapter_type() as adapter:
-                features = adapter.get_all_features(application)
+                features = adapter.get_all_features(application_name)
         except KeyDoesNotExistError:
-            abort(404, "Application %s does not exist." % application)
+            abort(404, "Application %s does not exist." % application_name)
 
         #  any local variables can be used in the template
         return locals()
 
     # TODO: change this crappy URL later
-    @app.post('/<application>/create', name='create')
-    def create_feature(application):
+    @app.post('/<application_name>/create', name='create')
+    def create_feature(application_name):
         feature_name = request.forms.new_feature
         if feature_name:
             try:
                 with adapter_type() as adapter:
-                    adapter.create_feature(application, feature_name)
+                    adapter.create_feature(application_name, feature_name)
             except KeyExistsError:
                 abort(409, "Feature %s already exists for application %s." %
-                      (feature_name, application))
+                      (feature_name, application_name))
 
         else:
             abort(400, "Please provide a name for the new feature.")
 
-        redirect(app.get_url('features', application=application))
+        redirect(app.get_url('features', application_name=application_name))
 
-    @app.route('/<application>/segments', name='segments',
+    @app.route('/<application_name>/segments', name='segments',
                method=["GET", "POST"])
     @view('segments')  # Name of template
-    def segments(application):
-        application = application.lower()
+    def segments(application_name):
+        application_name = application_name.lower()
         if request.method == "POST":
             segment_name = request.forms.new_segment
             if segment_name:
                 try:
                     with adapter_type() as adapter:
-                        adapter.create_segment(application, segment_name)
+                        adapter.create_segment(application_name, segment_name)
                 except KeyExistsError:
                     abort(409, "Segment %s already exists for application %s."
-                          % (segment_name, application))
+                          % (segment_name, application_name))
             else:
                 abort(400, "Please provide a name for the new segment.")
 
         try:
             with adapter_type() as adapter:
-                segments = adapter.get_all_segments(application)
+                segments = adapter.get_all_segments(application_name)
         except KeyDoesNotExistError:
-            abort(404, "Application %s does not exist." % application)
+            abort(404, "Application %s does not exist." % application_name)
 
         #  any local variables can be used in the template
         return locals()
 
-    @app.post('/<application>/options/<segment>', name='options')
-    def options(application, segment):
+    @app.post('/<application_name>/options/<segment>', name='options')
+    def options(application_name, segment):
         option_name = request.forms.new_option
         if option_name:
             try:
                 with adapter_type() as adapter:
-                    adapter.create_segment_option(application, segment,
+                    adapter.create_segment_option(application_name, segment,
                                                   option_name)
             except KeyExistsError:
                     abort(409, "Option %s already exists for segment %s in "
                           "application %s." % (option_name, segment,
-                                               application))
+                                               application_name))
         else:
             abort(400, "Please provide a name for the new segment option.")
 
-        redirect(app.get_url('segments', application=application))
+        redirect(app.get_url('segments', application_name=application_name))

@@ -1,7 +1,7 @@
 %rebase('layout', title='Flags', parent_url=app.get_url('applications'))
 
 <div id="container">
-    <h1 id="page-title"><a href="/" class="home-link"><img src="{{ app.get_url('static', path='images/home-icon.png') }}" /></a>{{application}}</h1>
+    <h1 id="page-title"><a href="/" class="home-link"><img src="{{ app.get_url('static', path='images/home-icon.png') }}" /></a>{{application_name}}</h1>
 
     <ul id="header-nav">
         <li><a href="{{app.get_url('features', application=application)}}">Features</a></li>
