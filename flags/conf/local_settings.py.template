@@ -6,5 +6,4 @@ DEFAULT_VALUE = True
 HOST = "localhost"
 PORT = 9595
 
-# ZK_HOSTS = "localhost:2181"
-ZK_HOSTS="zk1.dubizzlecloud.internal:2181, zk2.dubizzlecloud.internal:2181,zk3.dubizzlecloud.internal:2181"
+ZK_HOSTS = "localhost:2181"
