@@ -59,7 +59,7 @@ ul{margin:0; padding:0;}
 
 /* == ADDING AN ITEM
 =================================*/
-.add {background-color: white; padding: 4px 6px; margin-bottom: 30px; border:1px solid #cacaca; list-style-type: none}
+.add {background-color: white; padding: 4px 6px; margin-bottom: 30px; border:1px solid #cacaca; list-style-type: none; clear:both;}
 .add .add-form-input {width: 81.2%; border:none; font-size: 14px; padding: 4px 2%; outline: none;}
 .submit {width: 14%; display:inline-block; font-size: 12px; padding: 4px 0; height: 34px; background-color: #64A3D3; color: #456176; border:none; color: white; border-radius:4px; font-weight: bold}
 #add-new-application .add-form-input {width: 70%}
@@ -68,5 +68,6 @@ ul{margin:0; padding:0;}
 .full-width-button {width: 100%}
 .error {background-color: #FFCCCE; font-weight: bold; padding: 10px 6px; margin-bottom: 20px}
 .success {background-color: #4CD864; font-weight: bold; padding: 10px 6px; margin-bottom: 20px}
+.spacer {height:30px;}
 
 #add-option {height:24px;}
