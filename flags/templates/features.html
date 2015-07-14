@@ -13,73 +13,87 @@
         <li><a href="{{app.get_url('segments', application_name=application_name)}}">Segments</a></li>
     </ul>
 
-    <div class="error">Please enter a valid segment</div>
+    %if error:
+        <div class="error">{{error}}</div>
+    %end
 
-    <div class="success">Segment added</div>
+    %if not abort:
 
-    <ul id="add-misc">
-        <li class="add" id="add-feature">
-            <span class="add-form">
-                <form method="POST" action="{{app.get_url('create', application_name=application_name)}}">
-                    <input type="text" name="new_feature" class="add-form-input" placeholder="Add a new feature" />
-                    <input type="submit" class="submit" />
-                </form>
-            </span>
-        </li>
-    </ul>
+        %if saved:
+            <div class="success">Features configuration saved!</div>
+        %end
 
-<form method="POST">
-    %for feature in features:
+        %if added:
+            <div class="success">New feature added!</div>
+        %end
 
-        <div class="block">
-            <div class="block-header header">
-                <h3 title="{{features[feature]}}">{{feature}}</h3>
-                <span class="switch header-switch">
-
-                    <input type="checkbox" name="{{feature}}_checkbox" id="{{feature}}_checkbox" class="ios-toggle" {{"checked" if features[feature]["feature_toggled"] else ""}}/>
-                    <label for="{{feature}}_checkbox" class="checkbox-label"></label>
-
+        <ul id="add-misc">
+            <li class="add" id="add-feature">
+                <span class="add-form">
+                    <form method="POST" action="{{app.get_url('create', application_name=application_name)}}">
+                        <input type="text" name="new_feature" class="add-form-input" placeholder="Add a new feature" />
+                        <input type="submit" class="submit" />
+                    </form>
                 </span>
-            </div>
+            </li>
+        </ul>
 
-            %segmentation = features[feature].get("segmentation", None)
-            %if segmentation:
+        <form method="POST" action="{{app.get_url('features', application_name=application_name)}}">
+            %for feature in features:
 
-                <div class="segmentation-block">
-                <div class="block-header sub-header">
-                    <h3>Segmentation</h3>
-                </div>
+                <div class="block">
+                    <div class="block-header header">
+                        <h3 title="{{features[feature]}}">{{feature}}</h3>
+                        <span class="switch header-switch">
 
-                %for segment in segmentation:
-                    <div class="options-wrapper">
-                        <div class="block-header sub-sub-header">
-                            <h3>{{segment}}</h3>
-                            <span class="switch">
-                                <input type="checkbox" name="{{feature}}_{{segment}}_checkbox" id="{{feature}}_{{segment}}_checkbox" class="ios-toggle" {{"checked" if segmentation[segment]["toggled"] else ""}}/>
-                                <label for="{{feature}}_{{segment}}_checkbox" class="checkbox-label"></label>
-                            </span>
+                            <input type="checkbox" name="{{feature}}_checkbox" id="{{feature}}_checkbox" class="ios-toggle" {{"checked" if features[feature]["feature_toggled"] else ""}}/>
+                            <label for="{{feature}}_checkbox" class="checkbox-label"></label>
+
+                        </span>
+                    </div>
+
+                    %segmentation = features[feature].get("segmentation", None)
+                    %if segmentation:
+
+                        <div class="segmentation-block">
+                        <div class="block-header sub-header">
+                            <h3>Segmentation</h3>
                         </div>
 
-                        %options = segmentation[segment].get("options", None)
-                        %if options:
-                            %for option in options:
-                                <div class="options-block">
-                                    <input name="{{feature}}_{{segment}}_{{option}}_checkbox" type="checkbox" {{"checked" if options[option] else ""}} />
-                                    <label for="{{feature}}_{{segment}}_{{option}}_checkbox" >{{option}}</label>
+                        %for segment in segmentation:
+                            <div class="options-wrapper">
+                                <div class="block-header sub-sub-header">
+                                    <h3>{{segment}}</h3>
+                                    <span class="switch">
+                                        <input type="checkbox" name="{{feature}}_{{segment}}_checkbox" id="{{feature}}_{{segment}}_checkbox" class="ios-toggle" {{"checked" if segmentation[segment]["toggled"] else ""}}/>
+                                        <label for="{{feature}}_{{segment}}_checkbox" class="checkbox-label"></label>
+                                    </span>
                                 </div>
-                            %end
+
+                                %options = segmentation[segment].get("options", None)
+                                %if options:
+                                    %for option in options:
+                                        <div class="options-block">
+                                            <input name="{{feature}}_{{segment}}_{{option}}_checkbox" type="checkbox" {{"checked" if options[option] else ""}} />
+                                            <label for="{{feature}}_{{segment}}_{{option}}_checkbox" >{{option}}</label>
+                                        </div>
+                                    %end
+                                %end
+                            </div>
                         %end
-                    </div>
-                %end
+
+                        </div>
+                    %end
 
                 </div>
+
             %end
 
-        </div>
+            <input type="submit" class="submit full-width-button" />
+        </form>
 
     %end
 
-    <input type="submit" class="submit full-width-button" />
-    </form>
+</div>
 
 </div>

@@ -55,6 +55,10 @@ def register_ui_views(app):
     @view('features')  # Name of template
     def features(application_name):
         application_name = application_name.lower()
+        saved = False
+        added = False
+        error = None
+        abort = False
 
         if request.method == "POST":
             feature_chck_name_tmpl = "%s_checkbox"
@@ -89,33 +93,53 @@ def register_ui_views(app):
                     }
                     adapter.update_feature(application_name, feature,
                                            feature_dict)
+                    saved = True
 
         default = "Enabled" if settings.DEFAULT_VALUE else "Disabled"
         try:
             with adapter_type() as adapter:
                 features = adapter.get_all_features(application_name)
         except KeyDoesNotExistError:
-            abort(404, "Application %s does not exist." % application_name)
+            error = "Application %s does not exist." % application_name
+            abort = True
 
         #  any local variables can be used in the template
         return locals()
 
     # TODO: change this crappy URL later
     @app.post('/<application_name>/create', name='create')
+    @view('features')  # Name of template
     def create_feature(application_name):
+        application_name = application_name.lower()
         feature_name = request.forms.new_feature
+        added = False
+        saved = False
+        error = None
+        abort = False
+
         if feature_name:
             try:
                 with adapter_type() as adapter:
                     adapter.create_feature(application_name, feature_name)
+                added = True
             except KeyExistsError:
-                abort(409, "Feature %s already exists for application %s." %
-                      (feature_name, application_name))
+                error = ("Feature %s already exists for application %s." %
+                         (feature_name, application_name))
 
         else:
-            abort(400, "Please provide a name for the new feature.")
+            error = "Please provide a name for the new feature."
 
-        redirect(app.get_url('features', application_name=application_name))
+        # TODO: redirect to features instead of this block
+        default = "Enabled" if settings.DEFAULT_VALUE else "Disabled"
+        try:
+            with adapter_type() as adapter:
+                features = adapter.get_all_features(application_name)
+        except KeyDoesNotExistError:
+            error = "Application %s does not exist." % application_name
+            abort = True
+
+        #  any local variables can be used in the template
+        return locals()
 
     @app.route('/<application_name>/segments', name='segments',
                method=["GET", "POST"])

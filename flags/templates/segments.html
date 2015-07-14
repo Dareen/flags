@@ -4,8 +4,8 @@
     <h1 id="page-title"><a href="/" class="home-link"><img src="{{ app.get_url('static', path='images/home-icon.png') }}" /></a>{{application_name}}</h1>
 
     <ul id="header-nav">
-        <li><a href="{{app.get_url('features', application=application)}}">Features</a></li>
-        <li class="selected"><a href="{{app.get_url('segments', application=application)}}">Segments</a></li>
+        <li><a href="{{app.get_url('features', application_name=application_name)}}">Features</a></li>
+        <li class="selected"><a href="{{app.get_url('segments', application_name=application_name)}}">Segments</a></li>
     </ul>
 
     <div class="spacer">&nbsp;</div>
@@ -37,7 +37,7 @@
 
             <li class="add" id="add-segment">
             <span class="add-form">
-                <form method="POST" action="{{app.get_url('options', application=application, segment=segment)}}">
+                <form method="POST" action="{{app.get_url('options', application_name=application_name, segment=segment)}}">
                     <input type="text" name="new_option" class="add-form-input add-option" placeholder="+ Add an option" />
                     <input type="submit" class="submit" style="display:none" value="Submit" />
                 </form>
