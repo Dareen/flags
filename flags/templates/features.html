@@ -1,7 +1,7 @@
 %rebase('layout', title='Flags', parent_url=app.get_url('applications'))
 
 <div id="container">
-    <h1 id="page-title">{{application_name}}</h1>
+    <h1 id="page-title"><a href="/" class="home-link"><img src="{{ app.get_url('static', path='images/home-icon.png') }}" /></a>{{application_name}}</h1>
 
     <ul class="header-links">
         <li>Features are <b>{{default}}</b> by default, unless stated otherwise.</li>
@@ -13,8 +13,22 @@
         <li><a href="{{app.get_url('segments', application_name=application_name)}}">Segments</a></li>
     </ul>
 
-    <form method="POST">
+    <div class="error">Please enter a valid segment</div>
 
+    <div class="success">Segment added</div>
+
+    <ul id="add-misc">
+        <li class="add" id="add-feature">
+            <span class="add-form">
+                <form method="POST" action="{{app.get_url('create', application_name=application_name)}}">
+                    <input type="text" name="new_feature" class="add-form-input" placeholder="Add a new feature" />
+                    <input type="submit" class="submit" />
+                </form>
+            </span>
+        </li>
+    </ul>
+
+<form method="POST">
     %for feature in features:
 
         <div class="block">
@@ -65,42 +79,7 @@
 
     %end
 
-    <input type="submit" />
+    <input type="submit" class="submit full-width-button" />
     </form>
 
-    <ul id="add-misc">
-    <li class="add" id="add-feature">
-            <span class="add-text">+ Add a new feature</span>
-            <span class="add-form">
-                <form method="POST" action="{{app.get_url('create', application_name=application_name)}}">
-                    <input type="text" name="new_feature" class="add-form-input" />
-                    <input type="submit" />
-                </form>
-            </span>
-        </li>
-    </ul>
 </div>
-<script type="text/javascript">
-$('.ios-toggle').click(function(e) {
-    parent_div = $(this).parent().parent().parent();
-
-    if ($(this).parent().hasClass("header-switch")) {
-        parent_div.find(".segmentation-block").fadeToggle("fast");
-    }
-
-    parent_div.find(".options-block").fadeToggle("fast");
-
-    if ($(this).is(':checked')) {
-    } else {
-        parent_div.find("input:checkbox").each(function() {
-            this.checked = false;
-        });
-    }
-});
-$('.add-text').click(function(e) {
-    $(this).next().show();
-    $(this).next().find(".add-form-input").focus();
-    $(this).hide();
-});
-</script>
-

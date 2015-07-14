@@ -1,10 +1,7 @@
 %rebase('layout', title='Applications')
 
-<h1>Flags Service</h1>
-
-
 <div id="container">
-    <h1 id="page-title">Control Center</h1>
+    <h1 id="page-title">Flags Service - Control Center</h1>
 
     <ul class="header-links">
         <li>Code and Docs on <a href="https://github.com/dubizzle/flags">github</a></li>
@@ -12,26 +9,18 @@
     </ul>
 
     <ul id="home-nav">
-        %for application in applications:
+        %for application_name in applications:
            <li><a href="{{app.get_url('features', application_name=application_name)}}">{{application_name}}</a></li>
         %end
 
-        <li class="add">
-            <span class="add-text">+ Add a new application</span>
+        <li class="add" id="add-new-application">
             <span class="add-form">
                 <form method="POST">
-                    <input type="text" name="new_application" class="add-form-input" />
-                    <input type="submit" />
+                    <input type="text" name="new_application" class="add-form-input" placeholder="Add a new application" />
+                    <input type="submit" class="submit" />
                 </form>
             </span>
         </li>
+
     </ul>
 </div>
-
-<script type="text/javascript">
-$('.add-text').click(function(e) {
-    $(this).next().show();
-    $(this).next().find(".add-form-input").focus();
-    $(this).hide();
-});
-</script>
