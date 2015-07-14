@@ -3,10 +3,13 @@ import json
 
 from kazoo.client import KazooClient
 from kazoo.exceptions import NodeExistsError, NoNodeError
+from kazoo.handlers.threading import TimeoutError
 
 from flags.conf import settings
 from flags.adapters import BaseStoreAdapter
-from flags.errors import KeyExistsError, KeyDoesNotExistError
+from flags.errors import (KeyExistsError,
+                          KeyDoesNotExistError,
+                          ZKConnectionTimeoutError)
 
 
 logger = logging.getLogger(__name__)
@@ -15,7 +18,6 @@ logger = logging.getLogger(__name__)
 class ZKAdapter(BaseStoreAdapter):
 
     # TODO: move the logic to the logical layer
-    # TODO: handle connection errors
 
     @property
     def key_separator(self):
@@ -33,7 +35,10 @@ class ZKAdapter(BaseStoreAdapter):
 
     def connect(self):
         self.zk = KazooClient(hosts=settings.ZK_HOSTS)
-        self.zk.start(timeout=settings.ZK_CONNECTION_TIMEOUT)
+        try:
+            self.zk.start(timeout=settings.ZK_CONNECTION_TIMEOUT)
+        except TimeoutError:
+            raise ZKConnectionTimeoutError
 
     def disconnect(self):
         self.zk.stop()

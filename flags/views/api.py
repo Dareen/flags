@@ -1,15 +1,12 @@
 import logging
-from httplib import (CREATED, NOT_FOUND, NO_CONTENT, CONFLICT, UNAUTHORIZED,
-                     BAD_REQUEST)
+from httplib import NOT_FOUND, BAD_REQUEST
 
 from bottle import HTTPResponse, response, request
 from bottleCBV import BottleView
-from schema import SchemaError
 
 from flags.conf import settings
-from flags.conf.schemas import flags_schema
 from flags.adapters.zk_adapter import ZKAdapter
-from flags.errors import KeyExistsError, KeyDoesNotExistError
+from flags.errors import KeyDoesNotExistError
 
 
 logger = logging.getLogger(__name__)
@@ -26,7 +23,7 @@ class APIView(BottleView):
         self.adapter_type = ZKAdapter
 
     # TODO: use regex for mode
-    def index(self, application, mode=settings.RESPONSE_MODE_BASIC):
+    def index(self, application, mode):
         response.headers["Content-Type"] = "application/json"
         try:
             with self.adapter_type() as adapter:
@@ -92,8 +89,8 @@ class APIView(BottleView):
             # }
             feature_dicts = dict()
             for feature in application_features:
-                feature_dicts[feature] = self.read_feature(application,
-                                                           feature)
+                feature_dicts[feature] = self._read_feature(application,
+                                                            feature)
                 feature_dicts[feature]["user_enabled"] = self._parse_feature(
                                                              application,
                                                              feature)
@@ -108,7 +105,7 @@ class APIView(BottleView):
         if mode == settings.RESPONSE_MODE_BASIC:
             return {feature: self._parse_feature(application, feature)}
         elif mode == settings.RESPONSE_MODE_ADVANCED:
-            feature_dict = self.read_feature(application, feature)
+            feature_dict = self._read_feature(application, feature)
             feature_dict["user_enabled"] = self._parse_feature(application,
                                                                feature)
             return feature_dict
@@ -118,62 +115,12 @@ class APIView(BottleView):
                     settings.RESPONSE_MODE_ADVANCED))
             return HTTPResponse(status=BAD_REQUEST, body=msg)
 
-    def post(self, application, feature):
-        if settings.ADMIN_MODE:
-            try:
-                flags_schema.validate(request.json)
-            except SchemaError as e:
-                return HTTPResponse(status=BAD_REQUEST, body=e)
-
-            value = request.json
-            try:
-                with self.adapter_type() as adapter:
-                    adapter.create_feature(application, feature, value)
-                return HTTPResponse(status=CREATED)
-            except KeyExistsError:
-                msg = ("Feature already exists! You might want to use PUT "
-                       "instead of POST.")
-                return HTTPResponse(status=CONFLICT, body=msg)
-        else:
-            return HTTPResponse(status=UNAUTHORIZED)
-
-    def put(self, application, feature):
-        if settings.ADMIN_MODE:
-            try:
-                flags_schema.validate(request.json)
-            except SchemaError as e:
-                return HTTPResponse(status=BAD_REQUEST, body=e)
-
-            value = request.json
-            try:
-                with self.adapter_type() as adapter:
-                    adapter.update_feature(application, feature, value)
-                return HTTPResponse(status=NO_CONTENT)
-            except KeyDoesNotExistError:
-                msg = ("Feature does not exists! You might want to use POST "
-                       "instead of PUT.")
-                return HTTPResponse(status=NOT_FOUND, body=msg)
-        else:
-            return HTTPResponse(status=UNAUTHORIZED)
-
-    def delete(self, application, feature):
-        if settings.ADMIN_MODE:
-            try:
-                with self.adapter_type() as adapter:
-                    adapter.delete_feature(application, feature)
-                return HTTPResponse(status=NO_CONTENT)
-            except KeyDoesNotExistError:
-                return HTTPResponse(body="Feature does not exist!",
-                                    status=NOT_FOUND)
-        else:
-            return HTTPResponse(status=UNAUTHORIZED)
-
-    def read_feature(self, application, feature):
+    def _read_feature(self, application, feature):
         try:
             with self.adapter_type() as adapter:
                 return adapter.read_feature(application, feature)
         except KeyDoesNotExistError:
-            raise HTTPResponse(body="Feature does not exist!",
+            raise HTTPResponse(body="Feature %s does not exist!" % feature,
                                status=NOT_FOUND)
 
     def _parse_feature(self, application, feature):
@@ -212,7 +159,7 @@ class APIView(BottleView):
             # the user-specific segment is not available in this application
             return settings.DEFAULT_VALUE
 
-        feature_dict = self.read_feature(application, feature)
+        feature_dict = self._read_feature(application, feature)
         # If DEFAULT_VALUE is True, then features are Enabled unless stated
         # otherwise
         # If DEFAULT_VALUE is False, then features are Disabled unless stated

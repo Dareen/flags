@@ -1,64 +1,48 @@
 %rebase('layout', title='Flags', parent_url=app.get_url('applications'))
 
 <div id="container">
-    <h1 id="page-title">{{application}}</h1>
+    <h1 id="page-title"><a href="/" class="home-link"><img src="{{ app.get_url('static', path='images/home-icon.png') }}" /></a>{{application_name}}</h1>
 
     <ul id="header-nav">
-        <li><a href="{{app.get_url('features', application=application)}}">Features</a></li>
-        <li class="selected"><a href="{{app.get_url('segments', application=application)}}">Segments</a></li>
+        <li><a href="{{app.get_url('features', application_name=application_name)}}">Features</a></li>
+        <li class="selected"><a href="{{app.get_url('segments', application_name=application_name)}}">Segments</a></li>
     </ul>
 
-    %for segment in segments:
-        <ul id="segment-list">
-
-            <li id="segment-list-header" title="{{segments[segment]}}">{{segment}}<span class="delete">x</span></li>
-
-            %options = segments[segment]
-            %for option in options:
-                <li>{{option}}<span class="delete">x</span></li>
-            %end
-
-            <li class="add" id="add-segment">
-
-            <span class="add-text">+ Add a new {{segment}}</span>
-            <span class="add-form">
-                <form method="POST" action="{{app.get_url('options', application=application, segment=segment)}}">
-                    <input type="text" name="new_option" class="add-form-input" />
-                    <input type="submit" />
-                </form>
-            </span>
-            </li>
-        </ul>
-    %end
-
-    <script type="text/javascript">
-    $('.add-text').click(function(e) {
-        $(this).next().show();
-        $(this).next().find(".add-form-input").focus();
-        $(this).hide();
-    });
-    </script>
-
+    <div class="spacer">&nbsp;</div>
 
     <ul id="add-misc">
-    <li class="add" id="add-segment">
-            <span class="add-text">+ Add a new segment</span>
+        <li class="add" id="add-segment">
             <span class="add-form">
                 <form method="POST">
-                    <input type="text" name="new_segment" class="add-form-input" />
-                    <input type="submit" />
+                    <input type="text" name="new_segment" class="add-form-input" placeholder="Add a new segment" />
+                    <input type="submit" class="submit" />
                 </form>
             </span>
         </li>
     </ul>
 
+    %for segment in segments:
+        <ul id="segment-list">
+
+            <li id="segment-list-header" title="{{segments[segment]}}">{{segment}}<span class="delete">
+                <form><input type="submit" value="" /></form>
+            </span></li>
+
+            %options = segments[segment]
+            %for option in options:
+                <li>{{option}}<span class="delete">
+                    <form><input type="submit" value="" /></form>
+                </span></li>
+            %end
+
+            <li class="add" id="add-segment">
+            <span class="add-form">
+                <form method="POST" action="{{app.get_url('options', application_name=application_name, segment=segment)}}">
+                    <input type="text" name="new_option" class="add-form-input add-option" placeholder="+ Add an option" />
+                    <input type="submit" class="submit" style="display:none" value="Submit" />
+                </form>
+            </span>
+            </li>
+        </ul>
+    %end
 </div>
-<script type="text/javascript">
-$('.add-text').click(function(e) {
-    $(this).next().show();
-    $(this).next().find(".add-form-input").focus();
-    $(this).hide();
-});
-</script>
-
-
