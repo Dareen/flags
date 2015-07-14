@@ -9,7 +9,7 @@
     </ul>
 
     <ul id="home-nav">
-        %for application in applications:
+        %for application_name in applications:
            <li><a href="{{app.get_url('features', application_name=application_name)}}">{{application_name}}</a></li>
         %end
 
