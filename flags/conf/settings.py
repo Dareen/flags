@@ -8,6 +8,7 @@ DEBUG = env("DEBUG", cast=bool, default=False)
 LOG_LEVEL = env("LOG_LEVEL", default="INFO")
 APP_NAME = env("APP_NAME", default="flags")
 ADMIN_MODE = env("ADMIN_MODE", cast=bool, default=False)
+PRODUCTION_MODE = env("PRODUCTION_MODE", cast=bool, default=True)
 # If DEFAULT_VALUE is True, then features are Enabled unless stated otherwise
 # If DEFAULT_VALUE is False, then features are Disabled unless state otherwise
 DEFAULT_VALUE = env("DEFAULT_VALUE", cast=bool, default=True)
@@ -26,6 +27,9 @@ SEGMENTS_KEY = env("SEGMENTS_KEY", default="segments")
 
 RESPONSE_MODE_BASIC = "basic"
 RESPONSE_MODE_ADVANCED = "advanced"
+
+ROOT_PATH = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+NEW_RELIC_CONFIG = os.path.join(ROOT_PATH, 'deploy', 'newrelic.ini')
 
 #########################################
 # Local Settings and Test Settings
