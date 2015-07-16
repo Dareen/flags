@@ -134,5 +134,8 @@ No content
 
 ## What's next:
 * Tests
-* UI
-* Reading the list of available applications
+* Logging
+* Delete application
+* Delete segment option
+* Role-based authorization
+* More: https://github.com/dubizzle/flags/issues/7
