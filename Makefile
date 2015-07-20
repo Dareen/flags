@@ -10,30 +10,26 @@ FLAGS_GIT_REPO = git@github.com:dubizzle/$(APP_NAME)
 .PHONY: docker
 
 
-docker-local:
-	make docker-prep
+docker-local: docker-prep
 	cat requirements/base.txt requirements/development.txt requirements/testing.txt  > docker/requirements.txt
 	tar -pczf docker/archive.tar.gz . --exclude-vcs --exclude=docker/archive.tar.gz --exclude="temp_*" --exclude="*.pyc" --exclude="local_settings.py"
-	make docker-common
+	$(MAKE) docker-common
 
-docker-git:
-	make docker-prep
+docker-git: docker-prep
 	cp -p requirements/base.txt docker/requirements.txt
 	git clone $(FLAGS_GIT_REPO) docker/$(APP_NAME)
 	cd docker/$(APP_NAME); git reset --hard $(GIT_BRANCH); git submodule update --init
 	cd docker/$(APP_NAME); tar --exclude=.git -zcvf ../archive.tar.gz .
-	make docker-common
+	$(MAKE) docker-common
 
 docker-common:
 	docker build -t $(IMAGE_NAME):$(IMAGE_VERSION) docker
-	rm docker/archive.tar.gz
+	-rm -rf docker/archive.tar.gz docker/requirements.txt docker/$(APP_NAME)
 
-docker-prep:
-	rm -rf docker/archive.tar.gz docker/$(APP_NAME)
+docker-prep: clean-docker
 	mkdir docker/$(APP_NAME)
 
-docker:
-	make docker-git
+docker: docker-git
 
 clean-docker:
 	-rm -rf docker/archive.tar.gz docker/requirements.txt docker/$(APP_NAME)
