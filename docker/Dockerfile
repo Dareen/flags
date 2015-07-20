@@ -2,11 +2,14 @@ FROM phusion/baseimage:0.9.16
 
 MAINTAINER Dareen Alhiyari <dareen@dubizzle.com>
 
-ENV USER     dubizzle
-ENV GROUP    $USER
-ENV USER_DIR /home/$USER
-ENV VENV_DIR $USER_DIR/webapps/flags_env
-ENV REPO_DIR $VENV_DIR/flags VENV_PYTHON $VENV_DIR/bin/python VENV_PIP $VENV_DIR/bin/pip USER_LOGGING_DIR /var/log/$USER
+ENV USER             dubizzle
+ENV GROUP            $USER
+ENV USER_DIR         /home/$USER
+ENV VENV_DIR         $USER_DIR/webapps/flags_env
+ENV REPO_DIR         $VENV_DIR/flags
+ENV VENV_PYTHON      $VENV_DIR/bin/python
+ENV VENV_PIP         $VENV_DIR/bin/pip
+ENV USER_LOGGING_DIR /var/log/$USER
 
 # Install System Packages
 # TODO: filter those packages to only what's needed
@@ -32,7 +35,7 @@ RUN set -e; \
     useradd -m -d /home/$USER -p $USER -s /bin/bash $USER; \
     chown -R $USER:$USER $USER_DIR; \
     mkdir -p $USER_LOGGING_DIR; \
-    chmod oug+rw -R $USER_LOGGING_DIR; \
+    chmod a+rw -R $USER_LOGGING_DIR; \
     su - $USER -l -c "virtualenv --system-site-packages $VENV_DIR"; \
     su - $USER -l -c "$VENV_PIP install --upgrade -r /tmp/requirements.txt"
 

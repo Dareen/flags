@@ -11,8 +11,9 @@ FLAGS_GIT_REPO = git@github.com:dubizzle/$(APP_NAME)
 
 
 docker-local: docker-prep
-	cat requirements/base.txt requirements/development.txt requirements/testing.txt  > docker/requirements.txt
-	tar -pczf docker/archive.tar.gz . --exclude-vcs --exclude=docker/archive.tar.gz --exclude="temp_*" --exclude="*.pyc" --exclude="local_settings.py"
+	cat requirements/base.txt requirements/development.txt requirements/testing.txt | grep -v "-e .*" > docker/requirements.txt
+	tar -pczf /tmp/archive.tar.gz --exclude=".git" --exclude="*.pyc" --exclude="local_settings.py" .
+	mv /tmp/archive.tar.gz docker/archive.tar.gz
 	$(MAKE) docker-common
 
 docker-git: docker-prep
@@ -24,7 +25,7 @@ docker-git: docker-prep
 
 docker-common:
 	docker build -t $(IMAGE_NAME):$(IMAGE_VERSION) docker
-	-rm -rf docker/archive.tar.gz docker/requirements.txt docker/$(APP_NAME)
+	$(MAKE) clean-docker
 
 docker-prep: clean-docker
 	mkdir docker/$(APP_NAME)
