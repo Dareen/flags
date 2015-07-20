@@ -2,6 +2,7 @@ DEBUG = True
 LOG_LEVEL = "DEBUG"
 ADMIN_MODE = True
 DEFAULT_VALUE = True
+PRODUCTION_MODE = False
 
 HOST = "localhost"
 PORT = 9595

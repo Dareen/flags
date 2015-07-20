@@ -29,7 +29,7 @@ RESPONSE_MODE_BASIC = "basic"
 RESPONSE_MODE_ADVANCED = "advanced"
 
 ROOT_PATH = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-NEW_RELIC_CONFIG = os.path.join(ROOT_PATH, 'deploy', 'newrelic.ini')
+NEW_RELIC_CONFIG = os.path.join(ROOT_PATH, os.pardir, 'deploy', 'newrelic.ini')
 
 #########################################
 # Local Settings and Test Settings
