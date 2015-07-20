@@ -42,6 +42,7 @@ class ZKAdapter(BaseStoreAdapter):
 
     def disconnect(self):
         self.zk.stop()
+        self.zk.close()
 
     def get_applications(self):
         try:
