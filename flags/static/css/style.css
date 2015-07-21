@@ -43,8 +43,13 @@ ul{margin:0; padding:0;}
 .sub-sub-header h3 {margin-left:4%;}
 .sub-sub-header .switch {margin-right: 4%}
 
-.options-block {background-color: white; padding: 14px}
-.options-block label {display:inline-block; padding: 10px}
+.options-block {background-color: white; padding: 5px 14px;}
+.options-block-inner {position: relative;}
+.options-block label {display:inline-block; padding: 10px;}
+.options-block input {margin-right:14px;}
+/*Replacing default checkboxes with on/off images*/
+.options-block input[type="checkbox"]:before {content:" "; border-radius:20px; display: block; background-image: url(../images/on.png); border:none; background-size: 100%; position: absolute; left: 0; top:0; margin: 0px 0 0 8px; width:22px; height: 22px}
+.options-block input[type="checkbox"]:checked:before {background-image: url(../images/off.png)}
 
 /* == SEGMENT LIST
 =================================*/
