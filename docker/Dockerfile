@@ -1,4 +1,4 @@
-FROM phusion/baseimage:0.9.16
+FROM jeethu/baseimage-pypy:0.9.16.1
 
 MAINTAINER Dareen Alhiyari <dareen@dubizzle.com>
 
@@ -16,17 +16,7 @@ ENV USER_LOGGING_DIR /var/log/$USER
 RUN set -e; \
     add-apt-repository ppa:chris-lea/nginx-devel; \
     apt-get update -y; \
-    apt-get install -y make \
-        libcurl4-openssl-dev \
-        python2.7-dev \
-        python-virtualenv  \
-        nginx \
-        zlib1g-dev \
-        gettext \
-        libffi-dev \
-        libevent-dev \
-        zlibc \
-        python-setuptools
+    apt-get install -y nginx gcc
 
 ADD requirements.txt /tmp/
 
@@ -36,8 +26,9 @@ RUN set -e; \
     chown -R $USER:$USER $USER_DIR; \
     mkdir -p $USER_LOGGING_DIR; \
     chmod a+rw -R $USER_LOGGING_DIR; \
-    su - $USER -l -c "virtualenv --system-site-packages $VENV_DIR"; \
-    su - $USER -l -c "$VENV_PIP install --upgrade -r /tmp/requirements.txt"
+    su - $USER -l -c "virtualenv-pypy $VENV_DIR"; \
+    su - $USER -l -c "$VENV_PIP install --upgrade -r /tmp/requirements.txt"; \
+    su - $USER -l -c "rm -rf $USER_DIR/.cache/pip/wheels"
 
 ADD archive.tar.gz $REPO_DIR
 

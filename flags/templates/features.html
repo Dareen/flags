@@ -74,8 +74,9 @@
                                 %if options:
                                     %for option in options:
                                         <div class="options-block">
-                                            <input name="{{feature}}_{{segment}}_{{option}}_checkbox" type="checkbox" {{"checked" if options[option] else ""}} />
-                                            <label for="{{feature}}_{{segment}}_{{option}}_checkbox" >{{option}}</label>
+                                            <span class="options-block-inner">
+                                                <label for="{{feature}}_{{segment}}_{{option}}_checkbox" ><input name="{{feature}}_{{segment}}_{{option}}_checkbox" id="{{feature}}_{{segment}}_{{option}}_checkbox" type="checkbox" {{"checked" if options[option] else ""}} />{{option}}</label>
+                                            </span>
                                         </div>
                                     %end
                                 %end

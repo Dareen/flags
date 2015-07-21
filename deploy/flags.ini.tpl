@@ -3,8 +3,7 @@ socket = 127.0.0.1:8090
 master = true
 virtualenv = {{ VENV_DIR }}
 pythonpath = {{ REPO_DIR }}
-module = server
-callable = app
+pypy-wsgi-file = server.py
 logger = rsyslog:{{ SYSLOG_HOST | default("syslog-aws.dubizzlecloud.internal") }}:{{ SYSLOG_PORT | default("1122") }},{{ APP_NAME }}_uwsgi
 logto = /var/log/dubizzle/{{ APP_NAME }}_uwsgi.log
 processes = 4
@@ -20,5 +19,4 @@ evil-reload-on-as = 2048
 die-on-term
 # for newrelic
 post-buffering = 20971520
-max-requests=1000
 buffer-size = 32768
