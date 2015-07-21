@@ -1,8 +1,8 @@
-envtpl==0.3.2
+envtpl==0.4.1
 redis==2.10.3
-envparse==0.1.5
-bottleCBV
-uWSGI==1.9.20
+envparse==0.1.6
+BottleCBV==0.2
+uWSGI==2.0.11.1
 kazoo==2.0
 WTForms==2.0.2
 schema==0.3.1

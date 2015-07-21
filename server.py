@@ -11,14 +11,14 @@ from flags.conf import settings
 
 logger = logging.getLogger(__name__)
 
-app = Bottle()
+application = Bottle()
 
-APIView.register(app)
+APIView.register(application)
 if settings.ADMIN_MODE:
-    register_ui_views(app)
+    register_ui_views(application)
 
 
-@app.route("/check")
+@application.route("/check")
 def check():
     return "Up and running :)"
 
@@ -35,7 +35,7 @@ if __name__ == "__main__":
         "%s: %s" % (key, value) for key, value in app_kwargs.items()
     ]))
 
-    run(app, **app_kwargs)
+    run(application, **app_kwargs)
 
 # wrap the bottle app with newrelic wrapper
 if settings.PRODUCTION_MODE:
@@ -49,4 +49,4 @@ if settings.PRODUCTION_MODE:
         )
 
     newrelic.agent.initialize(settings.NEW_RELIC_CONFIG)
-    app = newrelic.agent.WSGIApplicationWrapper(app)
+    application = newrelic.agent.WSGIApplicationWrapper(application)
