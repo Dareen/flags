@@ -51,6 +51,14 @@ ul{margin:0; padding:0;}
 .options-block label .checkbox-bg {content:" "; border-radius:20px; display: block; background-image: url(../images/off.png); border:none; background-size: 100%; position: absolute; left: 0; top:0; margin: 0px 0 0 8px; width:22px; height: 22px}
 .options-block label :checked + .checkbox-bg{background-image: url(../images/on.png)}
 
+.seperator {border-top: 4px solid #333; height: 4px}
+
+/* == QUICK LINKS
+=================================*/
+#quicklinks {border:1px solid #cacaca; background-color: white; margin: 20px 0; padding: 10px 0 4px 30px}
+#quicklinks li{ margin-bottom: 6px}
+#quicklinks h3 {margin: 4px 0 8px -20px; text-transform: uppercase; font-size: 14px}
+
 /* == SEGMENT LIST
 =================================*/
 #segment-list {margin:0px 0 30px; padding:0; background-color: white; padding: 6px}
