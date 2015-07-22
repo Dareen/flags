@@ -48,7 +48,7 @@
 
         <form method="POST" action="{{app.get_url('features', application_name=application_name)}}">
             %for feature in features:
-
+                <a name="{{feature}}"></a>
                 <div class="block">
                     <div class="block-header header">
                         <h3 title="{{features[feature]}}">{{feature}}</h3>
