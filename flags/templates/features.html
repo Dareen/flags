@@ -38,13 +38,15 @@
             </li>
         </ul>
 
-        <div class="seperator">&nbsp;</div>
-        <ul id="quicklinks">
-            <h3>Quicklinks</h3>
-            %for feature in features:
-            <li><a href="#{{feature}}">{{feature}}</a></li>
-            %end
-        </ul>
+        %if len(features) > 0:
+            <div class="seperator">&nbsp;</div>
+            <ul id="quicklinks">
+                <h3>Quick Access</h3>
+                %for feature in features:
+                    <li><a href="#{{feature}}">{{feature}}</a></li>
+                %end
+            </ul>
+        %end
 
         <form method="POST" action="{{app.get_url('features', application_name=application_name)}}">
             %for feature in features:
