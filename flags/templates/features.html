@@ -32,23 +32,31 @@
                 <span class="add-form">
                     <form method="POST" action="{{app.get_url('create', application_name=application_name)}}">
                         <input type="text" name="new_feature" class="add-form-input" placeholder="Add a new feature" />
-                        <input type="submit" class="submit" />
+                        <input type="submit" class="submit" value="Submit" />
                     </form>
                 </span>
             </li>
         </ul>
 
+        %if len(features) > 0:
+            <div class="seperator">&nbsp;</div>
+            <ul id="quicklinks">
+                <h3>Quick Access</h3>
+                %for feature in features:
+                    <li><a href="#{{feature}}">{{feature}}</a></li>
+                %end
+            </ul>
+        %end
+
         <form method="POST" action="{{app.get_url('features', application_name=application_name)}}">
             %for feature in features:
-
+                <a name="{{feature}}"></a>
                 <div class="block">
                     <div class="block-header header">
                         <h3 title="{{features[feature]}}">{{feature}}</h3>
                         <span class="switch header-switch">
-
                             <input type="checkbox" name="{{feature}}_checkbox" id="{{feature}}_checkbox" class="ios-toggle" {{"checked" if features[feature]["feature_toggled"] else ""}}/>
                             <label for="{{feature}}_checkbox" class="checkbox-label"></label>
-
                         </span>
                     </div>
 
@@ -75,7 +83,10 @@
                                     %for option in options:
                                         <div class="options-block">
                                             <span class="options-block-inner">
-                                                <label for="{{feature}}_{{segment}}_{{option}}_checkbox" ><input name="{{feature}}_{{segment}}_{{option}}_checkbox" id="{{feature}}_{{segment}}_{{option}}_checkbox" type="checkbox" {{"checked" if options[option] else ""}} />{{option}}</label>
+                                                <label for="{{feature}}_{{segment}}_{{option}}_checkbox" >
+                                                    <input name="{{feature}}_{{segment}}_{{option}}_checkbox" id="{{feature}}_{{segment}}_{{option}}_checkbox" type="checkbox" {{"checked" if options[option] else ""}} />{{option}}
+                                                    <span class="checkbox-bg"></span>
+                                                </label>
                                             </span>
                                         </div>
                                     %end
@@ -90,7 +101,7 @@
 
             %end
 
-            <input type="submit" class="submit full-width-button" />
+            <input type="submit" class="submit full-width-button" value="Submit" />
         </form>
 
     %end

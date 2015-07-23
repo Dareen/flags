@@ -48,8 +48,16 @@ ul{margin:0; padding:0;}
 .options-block label {display:inline-block; padding: 10px;}
 .options-block input {margin-right:14px;}
 /*Replacing default checkboxes with on/off images*/
-.options-block input[type="checkbox"]:before {content:" "; border-radius:20px; display: block; background-image: url(../images/off.png); border:none; background-size: 100%; position: absolute; left: 0; top:0; margin: 0px 0 0 8px; width:22px; height: 22px}
-.options-block input[type="checkbox"]:checked:before {background-image: url(../images/on.png)}
+.options-block label .checkbox-bg {content:" "; border-radius:20px; display: block; background-image: url(../images/off.png); border:none; background-size: 100%; position: absolute; left: 0; top:0; margin: 0px 0 0 8px; width:22px; height: 22px}
+.options-block label :checked + .checkbox-bg{background-image: url(../images/on.png)}
+
+.seperator {border-top: 4px solid #333; height: 4px}
+
+/* == QUICK LINKS
+=================================*/
+#quicklinks {border:1px solid #cacaca; background-color: white; margin: 20px 0; padding: 10px 0 4px 14px}
+#quicklinks li{margin: 0 0 8px; padding-left:0; list-style-type: none; display: inline-block; width: 49%}
+#quicklinks h3 {margin: 4px 0 12px 0px; text-transform: uppercase; font-size: 14px}
 
 /* == SEGMENT LIST
 =================================*/
