@@ -5,6 +5,8 @@ from kazoo.client import KazooClient
 from kazoo.exceptions import NodeExistsError, NoNodeError
 from kazoo.handlers.threading import TimeoutError
 
+from nd_service_registry import KazooServiceRegistry
+
 from flags.conf import settings
 from flags.adapters import BaseStoreAdapter
 from flags.errors import (KeyExistsError,
@@ -18,20 +20,52 @@ logger = logging.getLogger(__name__)
 class ZKAdapter(BaseStoreAdapter):
 
     # TODO: move the logic to the logical layer
+    # TODO: separate the reader and the writer to different classes, since
+    # they're using different clients
+
+    # nd object handles all of the connection states
+    # there is no need to start/stop or monitor the connection state at all.
+    nd = KazooServiceRegistry(server=settings.ZK_HOSTS,
+                              timeout=settings.ZK_CONNECTION_TIMEOUT,
+                              rate_limit_calls=None)
 
     @property
     def key_separator(self):
         return "/"
 
     def get_key(self, *suffixes):
-        # *suffixes: anything to be added after the prefix and version
-        # e.g. application name, key, segments ... etc.
+        """
+        @suffixes: anything to be added after the prefix and version
+        e.g. application name, key, segments ... etc.
+        """
         def title(s): return s.lower()
+
         suffixes = map(title, suffixes)
         path = super(ZKAdapter, self).get_key(*suffixes)
         # append a preceeding slash in the beginning, ZK specific format
         path = "/%s" % path
         return path
+
+    def _check_data(self, node):
+        try:
+            data = node["data"]
+            stat = node["stat"]
+        except (TypeError, KeyError):
+            # node is False or malformed
+            # getting the node details from ZK failed.
+            raise ZKConnectionTimeoutError
+
+        # if stat is None, the node does not exist
+        if stat is None:
+            raise KeyDoesNotExistError
+
+        return data
+
+    def _get_children(self, key):
+        node = self.nd.get(key)
+        # check if the node exists
+        self._check_data(node)
+        return node["children"]
 
     def connect(self):
         self.zk = KazooClient(hosts=settings.ZK_HOSTS)
@@ -48,17 +82,13 @@ class ZKAdapter(BaseStoreAdapter):
         try:
             # self.get_key() without params will get the root node path
             # i.e. "/flags/v1/"
-            apps = self.zk.get_children(self.get_key())
-        except NoNodeError:
+            apps = self._get_children(self.get_key())
+        except KeyDoesNotExistError:
             return []
         return apps
 
     def get_all_keys(self, *path):
-        try:
-            keys = self.zk.get_children(self.get_key(*path))
-        except NoNodeError:
-            raise KeyDoesNotExistError
-        return keys
+        return self._get_children(self.get_key(*path))
 
     def get_all_features(self, application):
         keys = self.get_all_keys(application, settings.FEATURES_KEY)
@@ -98,7 +128,7 @@ class ZKAdapter(BaseStoreAdapter):
 
     def _prepare_default_feature_dict(self, application):
         # Create the segmentation
-        segments = self.zk.get_children(self.get_key(
+        segments = self._get_children(self.get_key(
             application,
             settings.SEGMENTS_KEY
         ))
@@ -107,7 +137,7 @@ class ZKAdapter(BaseStoreAdapter):
                 "toggled": settings.DEFAULT_VALUE,
                 "options": {
                     option: settings.DEFAULT_VALUE
-                    for option in self.zk.get_children(
+                    for option in self._get_children(
                         self.get_key(
                             application,
                             settings.SEGMENTS_KEY,
@@ -213,19 +243,12 @@ class ZKAdapter(BaseStoreAdapter):
         return self.read(application, settings.SEGMENTS_KEY, key)
 
     def read(self, *key_path):
+        node = self.nd.get(path=self.get_key(*key_path))
+        data = self._check_data(node)
         try:
-            # zk.retry will automatically retry upon zk connection failure
-            data, stat = self.zk.retry(
-                self.zk.get,
-                self.get_key(*key_path)
-            )
-            try:
-                return json.loads(data)
-            except ValueError:
-                return data
-
-        except NoNodeError:
-            raise KeyDoesNotExistError
+            return json.loads(data)
+        except (ValueError, TypeError):
+            return data
 
     def update_feature(self, application, key, value):
         node_path = self.get_key(application, settings.FEATURES_KEY, key)
