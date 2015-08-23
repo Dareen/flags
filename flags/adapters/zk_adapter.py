@@ -243,10 +243,7 @@ class ZKAdapter(BaseStoreAdapter):
     def read(self, *key_path):
         node = self.nd.get(path=self.get_key(*key_path))
         data = self._check_data(node)
-        try:
-            return json.loads(data)
-        except (ValueError, TypeError):
-            return data
+        return data
 
     def update_feature(self, application, key, value):
         node_path = self.get_key(application, settings.FEATURES_KEY, key)
