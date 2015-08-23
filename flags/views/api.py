@@ -20,16 +20,15 @@ class APIView(BottleView):
     # /api/<application>/advanced/<feature>
 
     def __init__(self):
-        self.adapter_type = ZKAdapter
+        self.adapter = ZKAdapter()
 
     # TODO: use regex for mode
     def index(self, application, mode):
         response.headers["Content-Type"] = "application/json"
         try:
-            with self.adapter_type() as adapter:
-                application_features = adapter.get_all_keys(
-                    application, settings.FEATURES_KEY
-                )
+            application_features = self.adapter.get_all_keys(
+                application, settings.FEATURES_KEY
+            )
         except KeyDoesNotExistError:
             msg = ("Application %s does not exists!" % application)
             return HTTPResponse(status=NOT_FOUND, body=msg)
@@ -117,8 +116,7 @@ class APIView(BottleView):
 
     def _read_feature(self, application, feature):
         try:
-            with self.adapter_type() as adapter:
-                return adapter.read_feature(application, feature)
+            return self.adapter.read_feature(application, feature)
         except KeyDoesNotExistError:
             raise HTTPResponse(body="Feature %s does not exist!" % feature,
                                status=NOT_FOUND)
