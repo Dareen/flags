@@ -48,10 +48,10 @@ class ZKAdapter(BaseStoreAdapter):
         try:
             data = node["data"]
             stat = node["stat"]
-        except (TypeError, KeyError):
+        except (TypeError, KeyError) as e:
             # node is False or malformed
             # getting the node details from ZK failed.
-            raise ZKConnectionTimeoutError
+            raise ZKConnectionTimeoutError(e)
 
         # if stat is None, the node does not exist
         if stat is None:
