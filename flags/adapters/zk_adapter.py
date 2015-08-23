@@ -38,9 +38,7 @@ class ZKAdapter(BaseStoreAdapter):
         @suffixes: anything to be added after the prefix and version
         e.g. application name, key, segments ... etc.
         """
-        def title(s): return s.lower()
-
-        suffixes = map(title, suffixes)
+        suffixes = map(lambda s: s.lower(), suffixes)
         path = super(ZKAdapter, self).get_key(*suffixes)
         # append a preceeding slash in the beginning, ZK specific format
         path = "/%s" % path
