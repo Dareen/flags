@@ -1,5 +1,6 @@
 import logging
 import json
+import operator
 
 from kazoo.client import KazooClient
 from kazoo.exceptions import NodeExistsError, NoNodeError
@@ -38,7 +39,7 @@ class ZKAdapter(BaseStoreAdapter):
         @suffixes: anything to be added after the prefix and version
         e.g. application name, key, segments ... etc.
         """
-        suffixes = map(lambda s: s.lower(), suffixes)
+        suffixes = map(operator.methodcaller("lower"), suffixes)
         path = super(ZKAdapter, self).get_key(*suffixes)
         # append a preceeding slash in the beginning, ZK specific format
         path = "/%s" % path
