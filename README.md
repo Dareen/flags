@@ -4,27 +4,27 @@ Feature toggles service based on dynamic segmentation and criteria.
 
 Reads and writes flags configuration to/from a key-value store (currently Zookeeper) to be used to enable/disable features.
 
-Can be used in multiple domains and applications e.g. Mobile, Motors, Property, Jobs, Core ... etc.
+Can be used in multiple domains and applications of your business.
 
 ## Notions and terminology
 #### Flag
 And sometimes also refered to as a Key or as a Feature, it's used to determine whether a certain feature is enabled or disabled.
 
-Future: to be used as a configuration value. e.g. max number of listings per view.
+Future: to be used as a configuration value. e.g. max and min configuration values of certain features, timeouts ... etc.
 
 #### Application
-Each set of features are bound to a certain application domain, e.g. Mobile, Motors, Property, Jobs, Core ... etc. This ensures isolation and prevents conflicts of flags in different domains.
+Each set of features are bound to a certain application domain. This ensures isolation and prevents conflicts of flags in different domains.
 
 #### Segmentation
-A segmentation is how you would like to segment enabling or disabling your features. Can be by the user account type, or by the user device type, or both.
+A segmentation is how you would like to segment enabling or disabling your features. Can be by the user account type, or by the user device type, or the country, or all of the above.
 Example segmentations: platform, country.
 
 #### Segmentation Option
-Different types of a given segmentation, say platform segmentation, it has the following possible options: ios, androind, windows, blackberry ... etc.
+Different types of a given segmentation, say platform segmentation, it has the following possible options: ios, androind, windows, blackberry, pwa, bot ... etc.
 
 
 ## Authentication
-Authentication of the admin UI is currently handled via a separate internal proxy, will support application authentication and authorization in the future.
+Currently not supported.
 
 ## Endpoints
 
